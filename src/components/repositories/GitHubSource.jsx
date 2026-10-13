@@ -120,11 +120,6 @@ function GitHubSource() {
           </button>
         </div>
       </form>
-      <p className="source-help">
-        O fluxo planejado é GitHub Actions → SAST → resultados no dashboard. O
-        backend precisa oferecer essa integração antes de iniciar uma análise
-        por repositório.
-      </p>
       {notice && (
         <div className="source-notice" role="status">
           {notice}
