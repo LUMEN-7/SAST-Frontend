@@ -100,7 +100,6 @@ function GitHubSource() {
           <b>Repositório GitHub</b>
           <p>Informe o endereço do repositório.</p>
         </div>
-        <span className="coming-soon">Integração pendente</span>
       </div>
       <form onSubmit={selectRepo} className="source-form">
         <label htmlFor="repository-url">URL DO REPOSITÓRIO</label>
