@@ -33,3 +33,6 @@ Configure `VITE_API_BASE_URL` com a origem HTTP(S) da API, **sem** `/api/v1` ao 
 ## Rotas
 
 `/` entrada • `/dashboard` visão geral • `/analysis/:id` resultado detalhado.
+
+## Fluxo sem upload de código
+A integração pretendida usa GitHub Actions para rodar SAST e entregar resultados à API. O backend atual não possui endpoint de análise por URL nem importação de resultados CI, então a interface não inicia execuções por URL e não faz upload de ZIP. Consultar análises existentes por ID permanece disponível.
