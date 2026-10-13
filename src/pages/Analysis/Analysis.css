@@ -1,0 +1,3 @@
+.analysis .findings{display:flex;flex-direction:column;gap:10px}
+.analysis .finding-body{overflow-wrap:anywhere}
+.analysis .scan-meta{margin-bottom:20px}
