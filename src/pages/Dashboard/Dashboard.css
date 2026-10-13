@@ -1,5 +1,5 @@
 .dashboard .stat-grid{margin-bottom:20px}
-.dashboard .attention-recent-grid{align-items:stretch}
+.tool-main .dashboard-grid.attention-recent-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
 .dashboard .attention-recent-grid>.panel{
   display:flex;
   flex-direction:column;
