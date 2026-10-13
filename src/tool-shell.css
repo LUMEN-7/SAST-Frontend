@@ -61,3 +61,10 @@
 .btn-outline{border-color:#d8e0e5;color:#3e515e}.btn-outline:hover{background:#f1f4f6}
 .filter-pills button,.finding,.finding-title,.gate-panel select{border-radius:6px}
 .filter-pills button.selected{background:#34444e;border-color:#34444e}
+
+/* Critical files left, compact recent analyses right */
+.tool-main .dashboard-grid.attention-recent-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.tool-main .attention-recent-grid>.panel{min-width:0;margin-bottom:0}
+.attention-recent-grid .table-scroll{overflow-x:auto}
+.attention-recent-grid .file-link span{overflow-wrap:anywhere}
+@media(max-width:1050px){.tool-main .dashboard-grid.attention-recent-grid{grid-template-columns:1fr}}

@@ -1,0 +1,3 @@
+.dashboard .stat-grid{margin-bottom:20px}
+.dashboard .attention-recent-grid{align-items:stretch}
+.dashboard .attention-recent-grid>.panel{min-width:0}
