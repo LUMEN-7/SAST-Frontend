@@ -30,3 +30,34 @@
 .source-help{font-size:10px!important;color:#83968a!important;margin:11px 0!important}.source-notice{font-size:11px;color:#365941;background:#f0f8e9;border:1px solid #d5e4cc;padding:11px;border-radius:8px;margin:11px 0}
 .job-lookup{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid #e7eee7;margin-top:16px;padding-top:15px}.job-lookup label{width:100%;margin:0}.job-lookup input{border:1px solid #dce7de;border-radius:7px;padding:10px;background:#f8faf7}.job-lookup .btn{min-height:37px}
 @media(max-width:1100px){.quick-scan{grid-template-columns:1fr}}@media(max-width:630px){.source-field{flex-wrap:wrap}.source-field input{flex-basis:calc(100% - 40px)}.source-field .btn{width:100%}.job-lookup input,.job-lookup .btn{width:100%;flex-basis:100%}}
+
+/* Operational visual refinement: neutral, compact, no decorative treatment */
+.tool-app{background:#f5f6f7;color:#232a31}
+.tool-sidebar{background:#202a32;border-right:1px solid #39414a}
+.tool-sidebar .brand-mark{background:#35434b;color:#eff3f5;border-radius:7px}
+.tool-sidebar .brand b{color:#f5f6f6}.tool-sidebar .brand-accent{color:#a9b6bf}
+.sidebar-caption{color:#91a0ac}.side-nav a{color:#c0c9cf;border-radius:6px}
+.side-nav a:hover{background:#35424b;color:#fff}.side-nav a.active{background:#394852;color:#fff;box-shadow:none}
+.sidebar-bottom{border-top-color:#394651}.avatar-guest{background:#35434b;border-color:#4c5b64;color:#dce4e6}
+.tool-toolbar{background:#fff;border-bottom-color:#e4e7e9}
+.tool-breadcrumb b{color:#3a454d}.toolbar-action{background:#34434b;color:white;border-radius:6px}.toolbar-action:hover{background:#202d35}
+.tool-main .page-heading h1{color:#202b33;font-family:'Manrope',sans-serif;font-weight:800;font-size:29px;letter-spacing:-.8px}
+.tool-main .page-heading p{color:#71808a}
+.tool-main .stat,.tool-main .panel,.tool-main .scan-meta{border-radius:8px;border-color:#e1e5e8;box-shadow:none}
+.tool-main .stat:before{display:none}.tool-main .stat strong{color:#26323a}
+.tool-main .stat-top svg{color:#667984}
+.tool-main .panel h2{font-family:'Manrope',sans-serif;color:#25323b;font-size:14px}
+.quick-scan{background:#fff;border:1px solid #e1e5e8;border-radius:8px;padding:21px 23px;gap:24px}
+.quick-scan-copy{padding:0}.quick-scan h2{font-family:'Manrope',sans-serif;font-size:18px;color:#25323b;margin:0 0 9px}
+.quick-scan p{font-size:12px;color:#6f7b83}
+.source-panel{background:#f9fafb;border:1px solid #e4e8eb;border-radius:7px;box-shadow:none}
+.source-header>svg{color:#526570}.source-header b{color:#27343c}.source-header p{color:#75828a}
+.source-field,.job-lookup input{background:#fff;border-color:#dbe2e6;border-radius:5px}
+.source-field input,.job-lookup input{color:#2c3941}.source-field svg{color:#788891}
+.source-help{color:#87949b!important}.source-notice{background:#eef3f6;color:#435b69;border-color:#d9e3e9;border-radius:5px}
+.tool-main .github-banner{background:#f9fafb;border-color:#e1e6ea;border-radius:8px}
+.github-icon{background:#e9eef1;color:#526b7a}.github-banner b{color:#35444d}.github-banner p{color:#7d8c96}
+.btn{border-radius:6px}.btn-primary{background:#34444e;box-shadow:none}.btn-primary:hover{background:#26343d}
+.btn-outline{border-color:#d8e0e5;color:#3e515e}.btn-outline:hover{background:#f1f4f6}
+.filter-pills button,.finding,.finding-title,.gate-panel select{border-radius:6px}
+.filter-pills button.selected{background:#34444e;border-color:#34444e}
