@@ -8,7 +8,7 @@
 .tool-main .page{width:min(1340px,calc(100% - 72px));padding:33px 0 65px}.tool-main .page-heading{margin-bottom:25px;align-items:center}.tool-main .page-heading h1{font-size:33px;margin:5px 0;letter-spacing:-1px}.tool-main .page-heading p{font-size:12px}.tool-main .section-kicker{font-size:9px;letter-spacing:1.5px;color:#779281}
 .tool-main .stat-grid{gap:12px}.tool-main .stat{border-radius:11px;padding:18px 20px;min-height:124px;box-shadow:none}.tool-main .stat:before{height:2px}.tool-main .stat strong{font-size:32px;margin:9px 0 3px}.tool-main .stat-top{font-size:11px}.tool-main .stat small{font-size:10px}
 .tool-main .panel{border-radius:11px;padding:21px;box-shadow:none;border-color:#e0e7e0}.tool-main .panel h2{font-size:15px}.tool-main .panel-head{margin-bottom:18px}.tool-main .dashboard-grid{gap:14px;margin-bottom:14px}.tool-main .dashboard-grid .panel{margin-bottom:0}
-.tool-main .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tool-main .dashboard-grid{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
 .tool-main .dashboard-grid:nth-of-type(2) .panel-upload{background:#eff7ee;border:1px solid #bcdcc0}
 .tool-main .dashboard-grid:nth-of-type(2) .panel-upload .upload{background:#fff;min-height:255px}
 .tool-main .github-banner{margin-top:14px;border-radius:11px;background:#fff}
@@ -63,7 +63,7 @@
 .filter-pills button.selected{background:#34444e;border-color:#34444e}
 
 /* Critical files left, compact recent analyses right */
-.tool-main .dashboard-grid.attention-recent-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.tool-main .dashboard-grid.attention-recent-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px;align-items:stretch}
 .tool-main .attention-recent-grid>.panel{min-width:0;margin-bottom:0}
 .attention-recent-grid .table-scroll{overflow-x:auto}
 .attention-recent-grid .file-link span{overflow-wrap:anywhere}
