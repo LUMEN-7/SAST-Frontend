@@ -58,6 +58,7 @@ import {
 } from "recharts";
 import { readRecent } from "../../api";
 import {sastService,isDemo} from "../../services/sastService";
+import MetricDetailsModal from "../../components/dashboard/MetricDetailsModal";
 import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Stat from "../../components/dashboard/StatCard";
@@ -70,6 +71,8 @@ function Dashboard() {
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true),
     [recent, setRecent] = useState(readRecent());
+  const [metricOpen,setMetricOpen]=useState(null);
+  const [alerts,setAlerts]=useState([]);
   const load = useCallback(async () => {
     try {
       setSummary(await sastService.getSummary());
@@ -89,7 +92,7 @@ function Dashboard() {
     .sort((a, b) => severity(b.key).rank - severity(a.key).rank);
   const trend = summary?.trend_last_7_days || [];
   const [demoAnalyses,setDemoAnalyses]=useState([]);
-  useEffect(()=>{sastService.getAnalyses().then(setDemoAnalyses)},[]);
+  useEffect(()=>{sastService.getAnalyses().then(setDemoAnalyses).catch(()=>{});sastService.getAlerts().then(setAlerts).catch(()=>{})},[]);
   const displayedRecent=isDemo?demoAnalyses:recent;
   return (
     <Layout dashboard>
@@ -115,19 +118,19 @@ function Dashboard() {
           </div>
         )}
         <div className="stat-grid">
-          <Stat
+          <Stat onClick={()=>setMetricOpen("analyses")}
             label="Análises realizadas"
             value={summary?.total_jobs ?? (loading ? "…" : "—")}
             icon={FolderGit2}
             note="Total registrado na API"
           />
-          <Stat
+          <Stat onClick={()=>setMetricOpen("findings")}
             label="Vulnerabilidades"
             value={summary?.total_findings ?? (loading ? "…" : "—")}
             icon={ShieldAlert}
             note="Achados em todas as análises"
           />
-          <Stat
+          <Stat onClick={()=>setMetricOpen("critical")}
             label="Riscos críticos"
             value={
               summary?.severity_distribution?.critical ?? (loading ? "…" : "—")
@@ -135,7 +138,7 @@ function Dashboard() {
             icon={TriangleAlert}
             note="Severidade crítica"
           />
-          <Stat
+          <Stat onClick={()=>setMetricOpen("high")}
             label="Riscos altos"
             value={
               summary?.severity_distribution?.high ?? (loading ? "…" : "—")
@@ -262,17 +265,18 @@ function Dashboard() {
             </div>
             {summary?.top_critical_files?.length ? (
               <div className="critical-files">
-                {summary.top_critical_files.map((f, i) => (
-                  <div className="critical-file" key={f.file_path}>
-                    <span className="file-index">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <FileCode2 size={17} />
-                    <span className="file-name">{f.file_path}</span>
+                {summary.top_critical_files.map((f, i) => {
+                  const matchedAlert=alerts.find(a=>a.file===f.file_path);
+                  const matchedAnalysis=demoAnalyses.find(a=>a.repository_id===matchedAlert?.repository_id);
+                  const target=matchedAnalysis?"/analysis/"+matchedAnalysis.id:null;
+                  return <div className="critical-file" key={f.file_path}>
+                    <span className="file-index">{String(i+1).padStart(2,"0")}</span>
+                    <FileCode2 size={17}/>
+                    <div className="critical-file-info"><span className="file-name">{f.file_path}</span>{matchedAlert&&<small>{matchedAlert.repository}</small>}</div>
                     <b>{f.findings} achado(s)</b>
-                  </div>
-                ))}
-              </div>
+                    {target?<Link className="critical-file-link" to={target} aria-label={"Ver análise de "+f.file_path}><ArrowUpRight size={17}/></Link>:<span className="critical-file-disabled" title="Análise do arquivo indisponível"><ArrowUpRight size={17}/></span>}
+                  </div>;
+                })}              </div>
             ) : (
               <Empty icon={FileCode2} title="Nenhum arquivo crítico">
                 Nenhum arquivo de alto risco foi retornado pelo backend.
@@ -339,6 +343,7 @@ function Dashboard() {
             )}
           </section>
         </div>
+        <MetricDetailsModal type={metricOpen} onClose={()=>setMetricOpen(null)} analyses={demoAnalyses} alerts={alerts} summary={summary} />
       </main>
     </Layout>
   );

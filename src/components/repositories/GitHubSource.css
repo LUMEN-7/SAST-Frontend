@@ -1,1 +1,4 @@
 .source-panel input:focus-visible{outline:2px solid #8aa5b4;outline-offset:2px}
+
+/* Connection form: compact tool-like card */
+.repository-connect .source-panel{max-width:none;background:linear-gradient(115deg,#f7fafb,#fff);border:1px solid #dde5e9;border-radius:11px;padding:24px}.repository-connect .source-header{padding-bottom:17px;border-bottom:1px solid #e5ebee}.repository-connect .source-header>svg{width:35px;height:35px;padding:7px;border-radius:9px;background:#e7eef2}.repository-connect .source-header b{font-size:15px}.repository-connect .source-form{margin-top:20px}.repository-connect .source-field{border-radius:8px;background:#fff;padding:7px}.repository-connect .source-field:focus-within{border-color:#7998aa;box-shadow:0 0 0 3px #779ab01a}.repository-connect .source-field .btn{min-height:38px}.repository-connect .job-lookup{padding-top:18px}.repository-connect .source-notice{line-height:1.6}

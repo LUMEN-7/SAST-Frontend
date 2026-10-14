@@ -1,1 +1,1 @@
-.stat{min-width:0}
+.stat{min-width:0}.stat-action{width:100%;font:inherit;text-align:left;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}.stat-action:hover{border-color:#9aafb9!important;background:#fafcfd;transform:translateY(-2px)}.stat-action:focus-visible{outline:2px solid #547486;outline-offset:3px}
