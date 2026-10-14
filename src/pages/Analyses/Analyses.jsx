@@ -4,6 +4,7 @@ import Layout from "../../components/layout/AppLayout";
 import Empty from "../../components/ui/EmptyState";
 import {sastService,isDemo} from "../../services/sastService";
 import RepositoryAnalysisAccordion from "../../components/analysis/RepositoryAnalysisAccordion";
+import AnalysisLegend from "../../components/analysis/AnalysisLegend";
 import "./Analyses.css";
 
 export default function Analyses(){
@@ -24,6 +25,7 @@ export default function Analyses(){
   <div className="page-heading"><div><h1>Análises</h1><p>Histórico de verificações de segurança por repositório.</p></div>{isDemo&&<span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>}</div>
   <section className="panel"><div className="panel-head"><div><h2>Execuções</h2><p>{items.length} análises em {groups.length} repositórios</p></div></div>
    <label className="search-field analyses-search"><Search size={16}/><input aria-label="Buscar análises" placeholder="Buscar por repositório, commit ou ID" value={query} onChange={e=>setQuery(e.target.value)}/></label>
+   <AnalysisLegend/>
    {error?<div role="alert" className="notice error">{error}</div>:loading?<p className="analyses-feedback">Carregando análises...</p>:filtered.length?<RepositoryAnalysisAccordion groups={filtered}/>:<Empty icon={ClipboardList} title="Nenhuma execução encontrada">Altere sua busca ou aguarde novas análises.</Empty>}
   </section>
  </main></Layout>
