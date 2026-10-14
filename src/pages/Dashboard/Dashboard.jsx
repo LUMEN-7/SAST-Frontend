@@ -63,7 +63,6 @@ import Stat from "../../components/dashboard/StatCard";
 import Tag from "../../components/ui/SeverityTag";
 import Status from "../../components/ui/AnalysisStatus";
 import Empty from "../../components/ui/EmptyState";
-import GitHubSource from "../../components/repositories/GitHubSource";
 import "./Dashboard.css";
 function Dashboard() {
   const [summary, setSummary] = useState(null),
@@ -111,16 +110,6 @@ function Dashboard() {
             Não foi possível carregar os dados do backend: {error}
           </div>
         )}
-        <section className="quick-scan" id="nova-analise">
-          <div className="quick-scan-copy">
-            <h2>Conectar repositório</h2>
-            <p>
-              Consulte os resultados das verificações de segurança associadas
-              aos seus repositórios.
-            </p>
-          </div>
-          <GitHubSource />
-        </section>
         <div className="stat-grid">
           <Stat
             label="Análises realizadas"

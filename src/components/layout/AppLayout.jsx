@@ -32,6 +32,8 @@ import {
   Github,
   GitBranch,
   LayoutDashboard,
+  Bell,
+  ClipboardList,
   LockKeyhole,
   Menu,
   Search,
@@ -59,6 +61,8 @@ import {
 import Brand from "./Brand";
 import "./AppLayout.css";
 function Layout({ children, dashboard = false }) {
+  const currentPath = useLocation().pathname;
+  const pageTitle = currentPath.startsWith("/analysis/") ? "Detalhes da análise" : currentPath.startsWith("/repositories") ? "Repositórios" : currentPath.startsWith("/analyses") ? "Análises" : currentPath.startsWith("/alerts") ? "Alertas" : "Visão geral";
   return (
     <div className="app tool-app">
       <aside className="tool-sidebar">
@@ -68,9 +72,15 @@ function Layout({ children, dashboard = false }) {
           <NavLink end to="/">
             <LayoutDashboard size={18} /> Visão geral
           </NavLink>
-          <a href="/#nova-analise">
+          <NavLink to="/repositories">
             <Github size={18} /> Repositórios
-          </a>
+          </NavLink>
+          <NavLink to="/analyses">
+            <ClipboardList size={18} /> Análises
+          </NavLink>
+          <NavLink to="/alerts">
+            <Bell size={18} /> Alertas
+          </NavLink>
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-user">
@@ -90,9 +100,7 @@ function Layout({ children, dashboard = false }) {
             <span>WORKSPACE</span>
             <span>/</span>
             <b>
-              {location.pathname.startsWith("/analysis/")
-                ? "Detalhes da análise"
-                : "Visão geral"}
+              {pageTitle}
             </b>
           </div>
         </div>

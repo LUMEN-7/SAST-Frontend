@@ -1,0 +1,1 @@
+.alerts-overview{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px}.alerts-overview>.panel{min-width:0}.alerts-context>svg{color:#72818a;margin-bottom:12px}.alerts-context p{font-size:12px;color:#75858b}.alerts-context .feature-note{font-size:11px}@media(max-width:900px){.alerts-overview{grid-template-columns:1fr}}
