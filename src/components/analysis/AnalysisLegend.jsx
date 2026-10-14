@@ -1,3 +1,4 @@
+import {ChevronDown,Info} from "lucide-react";
 import "./AnalysisLegend.css";
 const execution=[
  {label:"Concluída",tone:"success",description:"A verificação terminou e os resultados estão disponíveis."},
@@ -11,8 +12,10 @@ const security=[
  {label:"Pendente",tone:"neutral",description:"A avaliação não terminou ou ainda não tem dados suficientes."}
 ];
 export default function AnalysisLegend(){
- return <div className="analysis-legend" aria-label="Legenda dos indicadores de análise">
+ return <details className="analysis-legend" aria-label="Legenda dos indicadores de análise">
+  <summary className="analysis-legend-toggle"><span><Info size={16}/><b>Entenda os indicadores</b><small>Significado dos status e resultados de segurança</small></span><ChevronDown size={18} className="analysis-legend-chevron"/></summary>
+  <div className="analysis-legend-body">
   <section className="analysis-legend-section"><div className="analysis-legend-heading"><h3>Status da execução</h3><p>Etapa de processamento da verificação</p></div><div className="analysis-legend-grid">{execution.map(item=><div className="analysis-legend-item" key={item.label}><span className={"analysis-legend-badge legend-"+item.tone}><span className="legend-dot"/>{item.label}</span><p>{item.description}</p></div>)}</div></section>
   <section className="analysis-legend-section"><div className="analysis-legend-heading"><h3>Resultado de segurança</h3><p>Avaliação do Security Gate</p></div><div className="analysis-legend-grid">{security.map(item=><div className="analysis-legend-item" key={item.label}><span className={"analysis-legend-badge legend-"+item.tone}><span className="legend-dot"/>{item.label}</span><p>{item.description}</p></div>)}</div></section>
- </div>;
+ </div></details>;
 }
