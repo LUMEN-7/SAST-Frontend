@@ -1,2 +1,30 @@
-import {useEffect,useState} from "react";import {Link} from "react-router-dom";import {Search,ArrowUpRight,ClipboardList} from "lucide-react";import Layout from "../../components/layout/AppLayout";import Status from "../../components/ui/AnalysisStatus";import Empty from "../../components/ui/EmptyState";import {sastService,isDemo} from "../../services/sastService";import {date} from "../../utils/security";import "./Analyses.css";
-export default function Analyses(){const [items,setItems]=useState([]),[query,setQuery]=useState("");useEffect(()=>{sastService.getAnalyses().then(setItems)},[]);const visible=items.filter(x=>[x.repo_name,x.name,x.id,x.status].join(" ").toLowerCase().includes(query.toLowerCase()));return <Layout><main className="container page analyses-page"><div className="page-heading"><div><h1>Análises</h1><p>Histórico de verificações de segurança.</p></div>{isDemo&&<span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>}</div><section className="panel"><div className="panel-head"><div><h2>Execuções</h2><p>{items.length} análises disponíveis</p></div></div><label className="search-field analyses-search"><Search size={16}/><input placeholder="Buscar por repositório, status ou ID" value={query} onChange={e=>setQuery(e.target.value)}/></label>{visible.length?<div className="table-scroll"><table><thead><tr><th>Repositório</th><th>Commit</th><th>Data</th><th>Achados</th><th>Status</th><th/></tr></thead><tbody>{visible.map(row=><tr key={row.id}><td><Link className="file-link" to={"/analysis/"+row.id}>{row.repo_name||row.name||row.id}</Link></td><td className="mono">{row.commit||"—"}</td><td>{date(row.created_at)}</td><td>{row.total_findings??"—"}</td><td><Status value={row.status}/></td><td><Link to={"/analysis/"+row.id} aria-label="Ver detalhes"><ArrowUpRight size={17}/></Link></td></tr>)}</tbody></table></div>:<Empty icon={ClipboardList} title="Nenhuma execução encontrada">Altere sua busca ou aguarde novas análises.</Empty>}</section></main></Layout>}
+import {useEffect,useMemo,useState} from "react";
+import {Search,ClipboardList} from "lucide-react";
+import Layout from "../../components/layout/AppLayout";
+import Empty from "../../components/ui/EmptyState";
+import {sastService,isDemo} from "../../services/sastService";
+import RepositoryAnalysisAccordion from "../../components/analysis/RepositoryAnalysisAccordion";
+import "./Analyses.css";
+
+export default function Analyses(){
+ const [items,setItems]=useState([]),[query,setQuery]=useState(""),[loading,setLoading]=useState(true),[error,setError]=useState("");
+ useEffect(()=>{let active=true;sastService.getAnalysisHistory().then(rows=>{if(active)setItems(rows)}).catch(e=>{if(active)setError(e.message)}).finally(()=>{if(active)setLoading(false)});return()=>{active=false}},[]);
+ const groups=useMemo(()=>{
+   const grouped=new Map();
+   for(const item of items){
+     const name=item.repo_name||item.name||"Repositório não informado";
+     const key=item.repository_id||name;
+     if(!grouped.has(key))grouped.set(key,{id:key,name,analyses:[]});
+     grouped.get(key).analyses.push(item);
+   }
+   return [...grouped.values()].map(g=>({...g,analyses:g.analyses.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))})).sort((a,b)=>a.name.localeCompare(b.name));
+ },[items]);
+ const filtered=groups.map(g=>({...g,analyses:g.analyses.filter(a=>[g.name,a.id,a.commit,a.status,a.created_at].join(" ").toLowerCase().includes(query.toLowerCase()))})).filter(g=>g.analyses.length);
+ return <Layout><main className="container page analyses-page">
+  <div className="page-heading"><div><h1>Análises</h1><p>Histórico de verificações de segurança por repositório.</p></div>{isDemo&&<span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>}</div>
+  <section className="panel"><div className="panel-head"><div><h2>Execuções</h2><p>{items.length} análises em {groups.length} repositórios</p></div></div>
+   <label className="search-field analyses-search"><Search size={16}/><input aria-label="Buscar análises" placeholder="Buscar por repositório, commit ou ID" value={query} onChange={e=>setQuery(e.target.value)}/></label>
+   {error?<div role="alert" className="notice error">{error}</div>:loading?<p className="analyses-feedback">Carregando análises...</p>:filtered.length?<RepositoryAnalysisAccordion groups={filtered}/>:<Empty icon={ClipboardList} title="Nenhuma execução encontrada">Altere sua busca ou aguarde novas análises.</Empty>}
+  </section>
+ </main></Layout>
+}
