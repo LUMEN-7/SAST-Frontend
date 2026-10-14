@@ -56,7 +56,8 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { api, readRecent } from "../../api";
+import { readRecent } from "../../api";
+import {sastService,isDemo} from "../../services/sastService";
 import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Stat from "../../components/dashboard/StatCard";
@@ -71,7 +72,7 @@ function Dashboard() {
     [recent, setRecent] = useState(readRecent());
   const load = useCallback(async () => {
     try {
-      setSummary(await api.summary());
+      setSummary(await sastService.getSummary());
       setError("");
     } catch (e) {
       setError(e.message);
@@ -87,12 +88,15 @@ function Dashboard() {
     .map(([key, value]) => ({ name: severity(key).label, key, value }))
     .sort((a, b) => severity(b.key).rank - severity(a.key).rank);
   const trend = summary?.trend_last_7_days || [];
+  const [demoAnalyses,setDemoAnalyses]=useState([]);
+  useEffect(()=>{sastService.getAnalyses().then(setDemoAnalyses)},[]);
+  const displayedRecent=isDemo?demoAnalyses:recent;
   return (
     <Layout dashboard>
       <main className="container page dashboard">
         <div className="page-heading">
           <div>
-            <h1>Visão geral</h1>
+            <h1>Visão geral</h1>{isDemo&&<span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>}
             <p>Acompanhe os resultados das análises dos seus projetos.</p>
           </div>
           <button
@@ -281,11 +285,11 @@ function Dashboard() {
                 <h2>Análises recentes</h2>
                 <p>Histórico armazenado neste navegador</p>
               </div>
-              <Link className="text-link" to="/">
-                Nova análise <ArrowUpRight size={15} />
+              <Link className="text-link" to="/analyses">
+                Ver todas <ArrowUpRight size={15} />
               </Link>
             </div>
-            {recent.length ? (
+            {displayedRecent.length ? (
               <div className="table-scroll">
                 <table>
                   <thead>
@@ -297,7 +301,7 @@ function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {recent.map((item) => (
+                    {displayedRecent.map((item) => (
                       <tr key={item.id}>
                         <td>
                           <Link
@@ -305,11 +309,11 @@ function Dashboard() {
                             to={"/analysis/" + item.id}
                           >
                             <FileArchive size={17} />
-                            <span>{item.name}</span>
+                            <span>{item.repo_name||item.name}</span>
                           </Link>
                           <small className="mono">{item.id.slice(0, 8)}</small>
                         </td>
-                        <td>{date(item.at)}</td>
+                        <td>{date(item.created_at||item.at)}</td>
                         <td>
                           <Status value={item.status} />
                         </td>
