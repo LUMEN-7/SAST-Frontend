@@ -4,6 +4,7 @@ import {ArrowLeft,ArrowUpRight,GitBranch,FolderGit2,ShieldAlert,Activity,Clock3}
 import {ResponsiveContainer,LineChart,Line,CartesianGrid,XAxis,YAxis,Tooltip} from "recharts";
 import Layout from "../../components/layout/AppLayout";
 import Status from "../../components/ui/AnalysisStatus";
+import SecurityResult from "../../components/ui/SecurityResult";
 import Tag from "../../components/ui/SeverityTag";
 import {sastService,isDemo} from "../../services/sastService";
 import {date} from "../../utils/security";
@@ -34,7 +35,7 @@ export default function RepositoryDetails(){
     </div>)}</div>
     <p className="repo-severity-hint">Resumo consolidado do repositório. Os arquivos e as correções ficam disponíveis em cada análise.</p>
    </div>:<div className="repo-detail-empty">A distribuição de severidades estará disponível após uma análise com dados completos.</div>}</section></div>
-   <section className="panel"><div className="panel-head"><div><h2>Histórico de análises</h2><p>Execuções deste repositório, da mais recente para a mais antiga</p></div></div>{ordered.length?<div className="table-scroll"><table><thead><tr><th>Data</th><th>Commit</th><th>Achados</th><th>Status</th><th></th></tr></thead><tbody>{ordered.map(a=><tr key={a.id}><td>{date(a.created_at)}</td><td className="mono">{a.commit||"—"}</td><td>{a.total_findings??"—"}</td><td><Status value={a.status}/></td><td><Link to={"/analysis/"+a.id} aria-label="Abrir análise"><ArrowUpRight size={17}/></Link></td></tr>)}</tbody></table></div>:<div className="repo-detail-empty">Ainda não existem análises deste repositório.</div>}</section>
+   <section className="panel"><div className="panel-head"><div><h2>Histórico de análises</h2><p>Execuções deste repositório, da mais recente para a mais antiga</p></div></div>{ordered.length?<div className="table-scroll"><table><thead><tr><th>Data</th><th>Commit</th><th>Achados</th><th>Status</th><th>Resultado</th><th></th></tr></thead><tbody>{ordered.map(a=><tr key={a.id}><td>{date(a.created_at)}</td><td className="mono">{a.commit||"—"}</td><td>{a.total_findings??"—"}</td><td><Status value={a.status}/></td><td><SecurityResult analysis={a}/></td><td><Link to={"/analysis/"+a.id} aria-label="Abrir análise"><ArrowUpRight size={17}/></Link></td></tr>)}</tbody></table></div>:<div className="repo-detail-empty">Ainda não existem análises deste repositório.</div>}</section>
   </>}
  </main></Layout>
 }
