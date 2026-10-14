@@ -62,7 +62,7 @@ import Brand from "./Brand";
 import "./AppLayout.css";
 function Layout({ children, dashboard = false }) {
   const currentPath = useLocation().pathname;
-  const pageTitle = currentPath.startsWith("/analysis/") ? "Detalhes da análise" : currentPath.startsWith("/repositories") ? "Repositórios" : currentPath.startsWith("/analyses") ? "Análises" : currentPath.startsWith("/alerts") ? "Alertas" : "Visão geral";
+  const pageTitle = currentPath.startsWith("/repositories/") ? "Histórico do repositório" : currentPath.startsWith("/analysis/") ? "Detalhes da análise" : currentPath.startsWith("/repositories") ? "Repositórios" : currentPath.startsWith("/analyses") ? "Análises" : currentPath.startsWith("/alerts") ? "Alertas" : "Visão geral";
   return (
     <div className="app tool-app">
       <aside className="tool-sidebar">
