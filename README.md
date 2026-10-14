@@ -36,3 +36,16 @@ Configure `VITE_API_BASE_URL` com a origem HTTP(S) da API, **sem** `/api/v1` ao 
 
 ## Fluxo sem upload de código
 A integração pretendida usa GitHub Actions para rodar SAST e entregar resultados à API. O backend atual não possui endpoint de análise por URL nem importação de resultados CI, então a interface não inicia execuções por URL e não faz upload de ZIP. Consultar análises existentes por ID permanece disponível.
+
+## Dados de demonstração
+
+O frontend utiliza `VITE_DATA_MODE=mock` por padrão. As páginas Visão geral, Repositórios, Análises, Alertas e detalhes de execuções `demo-*` usam fixtures locais em `src/mocks/sastData.js`, identificadas como **DADOS DE DEMONSTRAÇÃO**. Não são análises reais e não são enviadas à API. O exemplo de relatório também é fictício.
+
+Para habilitar chamadas reais do dashboard e das análises por UUID:
+
+```env
+VITE_DATA_MODE=api
+VITE_API_BASE_URL=https://seu-backend
+```
+
+A interface consome `src/services/sastService.js`; altere **somente o serviço** quando o backend oferecer `GET /api/v1/repositories`, `GET /api/v1/analyses` e `GET /api/v1/alerts`. Esses endpoints ainda são contratos planejados, não rotas existentes. Não há upload automático do código-fonte.
