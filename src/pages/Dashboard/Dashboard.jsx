@@ -268,7 +268,7 @@ function Dashboard() {
                 {summary.top_critical_files.map((f, i) => {
                   const matchedAlert=alerts.find(a=>a.file===f.file_path);
                   const matchedAnalysis=demoAnalyses.find(a=>a.repository_id===matchedAlert?.repository_id);
-                  const target=matchedAnalysis?"/analysis/"+matchedAnalysis.id:null;
+                  const target=matchedAnalysis?"/analysis/"+matchedAnalysis.id+"?file="+encodeURIComponent(f.file_path):null;
                   return <div className="critical-file" key={f.file_path}>
                     <span className="file-index">{String(i+1).padStart(2,"0")}</span>
                     <FileCode2 size={17}/>
