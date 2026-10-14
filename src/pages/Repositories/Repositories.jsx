@@ -18,7 +18,7 @@ export default function Repositories(){
   {filtered.length?<div className="repo-list"><div className="repo-list-heading"><span>REPOSITÓRIO</span><span>RISCO</span><span>ACHADOS</span><span></span></div>
    {filtered.map(repo=>{const related=analyses.filter(a=>a.repository_id===repo.id).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));const job=related[0];return <div className="repo-item" key={repo.id}>
     <span className="repo-symbol"><FolderGit2 size={19}/></span>
-    <div className="repo-info"><Link to={"/repositories/"+encodeURIComponent(repo.id)} className="repo-name-link">{repo.full_name}</Link><small><GitBranch size={13}/>{repo.branch}<span className="repo-separator"/> {repo.language}</small></div>
+    <div className="repo-info"><Link to={"/repositories/"+encodeURIComponent(repo.id)} className="repo-name-link">{repo.full_name}</Link><small>{repo.language}</small></div>
     <span className={"repo-risk risk-"+repo.risk}>{severity(repo.risk).label}</span>
     <div className="repo-count"><b>{repo.findings}</b><small>achados</small></div>
     {<Link className="repo-open" aria-label={"Abrir dashboard de "+repo.full_name} to={"/repositories/"+encodeURIComponent(repo.id)}><ArrowUpRight size={17}/></Link>}
