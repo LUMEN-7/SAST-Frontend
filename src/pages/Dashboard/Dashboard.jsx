@@ -57,12 +57,13 @@ import {
   Cell,
 } from "recharts";
 import { readRecent } from "../../api";
-import {sastService,isDemo} from "../../services/sastService";
+import { sastService, isDemo } from "../../services/sastService";
 import MetricDetailsModal from "../../components/dashboard/MetricDetailsModal";
 import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Stat from "../../components/dashboard/StatCard";
 import Tag from "../../components/ui/SeverityTag";
+import ZipUpload from "../../components/upload/ZipUpload";
 import Status from "../../components/ui/AnalysisStatus";
 import Empty from "../../components/ui/EmptyState";
 import "./Dashboard.css";
@@ -71,8 +72,8 @@ function Dashboard() {
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true),
     [recent, setRecent] = useState(readRecent());
-  const [metricOpen,setMetricOpen]=useState(null);
-  const [alerts,setAlerts]=useState([]);
+  const [metricOpen, setMetricOpen] = useState(null);
+  const [alerts, setAlerts] = useState([]);
   const load = useCallback(async () => {
     try {
       setSummary(await sastService.getSummary());
@@ -91,15 +92,27 @@ function Dashboard() {
     .map(([key, value]) => ({ name: severity(key).label, key, value }))
     .sort((a, b) => severity(b.key).rank - severity(a.key).rank);
   const trend = summary?.trend_last_7_days || [];
-  const [demoAnalyses,setDemoAnalyses]=useState([]);
-  useEffect(()=>{sastService.getAnalyses().then(setDemoAnalyses).catch(()=>{});sastService.getAlerts().then(setAlerts).catch(()=>{})},[]);
-  const displayedRecent=isDemo?demoAnalyses:recent;
+  const [demoAnalyses, setDemoAnalyses] = useState([]);
+  useEffect(() => {
+    sastService
+      .getAnalyses()
+      .then(setDemoAnalyses)
+      .catch(() => {});
+    sastService
+      .getAlerts()
+      .then(setAlerts)
+      .catch(() => {});
+  }, []);
+  const displayedRecent = isDemo ? demoAnalyses : recent;
   return (
     <Layout dashboard>
       <main className="container page dashboard">
         <div className="page-heading">
           <div>
-            <h1>Visão geral</h1>{isDemo&&<span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>}
+            <h1>Visão geral</h1>
+            {isDemo && (
+              <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
+            )}
             <p>Acompanhe os resultados das análises dos seus projetos.</p>
           </div>
           <button
@@ -112,25 +125,29 @@ function Dashboard() {
             <Activity size={16} /> Atualizar
           </button>
         </div>
+        <ZipUpload />
         {error && (
           <div role="alert" className="notice error">
             Não foi possível carregar os dados do backend: {error}
           </div>
         )}
         <div className="stat-grid">
-          <Stat onClick={()=>setMetricOpen("analyses")}
+          <Stat
+            onClick={() => setMetricOpen("analyses")}
             label="Análises realizadas"
             value={summary?.total_jobs ?? (loading ? "…" : "—")}
             icon={FolderGit2}
             note="Total registrado na API"
           />
-          <Stat onClick={()=>setMetricOpen("findings")}
+          <Stat
+            onClick={() => setMetricOpen("findings")}
             label="Vulnerabilidades"
             value={summary?.total_findings ?? (loading ? "…" : "—")}
             icon={ShieldAlert}
             note="Achados em todas as análises"
           />
-          <Stat onClick={()=>setMetricOpen("critical")}
+          <Stat
+            onClick={() => setMetricOpen("critical")}
             label="Riscos críticos"
             value={
               summary?.severity_distribution?.critical ?? (loading ? "…" : "—")
@@ -138,7 +155,8 @@ function Dashboard() {
             icon={TriangleAlert}
             note="Severidade crítica"
           />
-          <Stat onClick={()=>setMetricOpen("high")}
+          <Stat
+            onClick={() => setMetricOpen("high")}
             label="Riscos altos"
             value={
               summary?.severity_distribution?.high ?? (loading ? "…" : "—")
@@ -266,17 +284,51 @@ function Dashboard() {
             {summary?.top_critical_files?.length ? (
               <div className="critical-files">
                 {summary.top_critical_files.map((f, i) => {
-                  const matchedAlert=alerts.find(a=>a.file===f.file_path);
-                  const matchedAnalysis=demoAnalyses.find(a=>a.repository_id===matchedAlert?.repository_id);
-                  const target=matchedAnalysis?"/analysis/"+matchedAnalysis.id+"?file="+encodeURIComponent(f.file_path):null;
-                  return <div className="critical-file" key={f.file_path}>
-                    <span className="file-index">{String(i+1).padStart(2,"0")}</span>
-                    <FileCode2 size={17}/>
-                    <div className="critical-file-info"><span className="file-name">{f.file_path}</span>{matchedAlert&&<small>{matchedAlert.repository}</small>}</div>
-                    <b>{f.findings} achado(s)</b>
-                    {target?<Link className="critical-file-link" to={target} aria-label={"Ver análise de "+f.file_path}><ArrowUpRight size={17}/></Link>:<span className="critical-file-disabled" title="Análise do arquivo indisponível"><ArrowUpRight size={17}/></span>}
-                  </div>;
-                })}              </div>
+                  const matchedAlert = alerts.find(
+                    (a) => a.file === f.file_path,
+                  );
+                  const matchedAnalysis = demoAnalyses.find(
+                    (a) => a.repository_id === matchedAlert?.repository_id,
+                  );
+                  const target = matchedAnalysis
+                    ? "/analysis/" +
+                      matchedAnalysis.id +
+                      "?file=" +
+                      encodeURIComponent(f.file_path)
+                    : null;
+                  return (
+                    <div className="critical-file" key={f.file_path}>
+                      <span className="file-index">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <FileCode2 size={17} />
+                      <div className="critical-file-info">
+                        <span className="file-name">{f.file_path}</span>
+                        {matchedAlert && (
+                          <small>{matchedAlert.repository}</small>
+                        )}
+                      </div>
+                      <b>{f.findings} achado(s)</b>
+                      {target ? (
+                        <Link
+                          className="critical-file-link"
+                          to={target}
+                          aria-label={"Ver análise de " + f.file_path}
+                        >
+                          <ArrowUpRight size={17} />
+                        </Link>
+                      ) : (
+                        <span
+                          className="critical-file-disabled"
+                          title="Análise do arquivo indisponível"
+                        >
+                          <ArrowUpRight size={17} />
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}{" "}
+              </div>
             ) : (
               <Empty icon={FileCode2} title="Nenhum arquivo crítico">
                 Nenhum arquivo de alto risco foi retornado pelo backend.
@@ -313,11 +365,11 @@ function Dashboard() {
                             to={"/analysis/" + item.id}
                           >
                             <FileArchive size={17} />
-                            <span>{item.repo_name||item.name}</span>
+                            <span>{item.repo_name || item.name}</span>
                           </Link>
                           <small className="mono">{item.id.slice(0, 8)}</small>
                         </td>
-                        <td>{date(item.created_at||item.at)}</td>
+                        <td>{date(item.created_at || item.at)}</td>
                         <td>
                           <Status value={item.status} />
                         </td>
@@ -343,7 +395,13 @@ function Dashboard() {
             )}
           </section>
         </div>
-        <MetricDetailsModal type={metricOpen} onClose={()=>setMetricOpen(null)} analyses={demoAnalyses} alerts={alerts} summary={summary} />
+        <MetricDetailsModal
+          type={metricOpen}
+          onClose={() => setMetricOpen(null)}
+          analyses={demoAnalyses}
+          alerts={alerts}
+          summary={summary}
+        />
       </main>
     </Layout>
   );

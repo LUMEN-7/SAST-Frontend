@@ -1,8 +1,150 @@
-import React,{useCallback,useEffect,useMemo,useRef,useState} from 'react';
-import {Link,NavLink,useNavigate,useParams,useLocation} from 'react-router-dom';
-import {Activity,ArrowDownToLine,ArrowLeft,ArrowRight,ArrowUpRight,BookOpen,Check,CheckCircle2,ChevronDown,Clock3,CloudUpload,Code2,ExternalLink,FileArchive,FileCode2,FolderGit2,Github,GitBranch,LayoutDashboard,LockKeyhole,Menu,Search,Shield,ShieldAlert,ShieldCheck,ShieldQuestion,Terminal,TriangleAlert,UploadCloud,X} from 'lucide-react';
-import {ResponsiveContainer,AreaChart,Area,CartesianGrid,XAxis,YAxis,Tooltip,BarChart,Bar,Cell} from 'recharts';
-import Tag from '../ui/SeverityTag';
-function Finding({finding,index}){const [open,setOpen]=useState(index===0);const ai=finding.ai_explanation||finding.ai_suggestion||finding.ai_patch;return <article className="finding"><button className="finding-title" onClick={()=>setOpen(!open)} aria-expanded={open}><div className="finding-name"><Tag name={finding.ai_severity||finding.severity}/><div><b>{finding.message||finding.rule_id||'Vulnerabilidade encontrada'}</b><small><FileCode2 size={13}/>{finding.file_path||'Arquivo não informado'}{finding.line?' · Linha '+finding.line:''} · {finding.tool||'SAST'}</small></div></div><ChevronDown className={open?'rotate':''} size={19}/></button>{open&&<div className="finding-body"><div className="finding-meta"><span>Regra: <b>{finding.rule_id||'—'}</b></span><span>Ferramenta: <b>{finding.tool||'—'}</b></span><span>Falso positivo: <b>{finding.is_false_positive===true?'Sim':finding.is_false_positive===false?'Não':'Não avaliado'}</b></span></div><h4>O que foi identificado</h4><p>{finding.ai_explanation||finding.message||'A API não retornou explicação adicional para este achado.'}</p><h4>Como corrigir</h4><p>{finding.ai_suggestion||'Ainda não há uma recomendação automática disponível para este achado.'}</p>{finding.ai_patch&&<><h4>Patch sugerido</h4><pre className="code-block"><code>{finding.ai_patch}</code></pre></>}{finding.taint_source&&<p className="taint"><b>Origem:</b> {finding.taint_source}</p>}{finding.taint_sink&&<p className="taint"><b>Destino:</b> {finding.taint_sink}</p>}{!ai&&<small className="muted">O enriquecimento por IA pode não estar disponível para esta análise.</small>}</div>}</article>}
-import './FindingCard.css';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  Link,
+  NavLink,
+  useNavigate,
+  useParams,
+  useLocation,
+} from "react-router-dom";
+import {
+  Activity,
+  ArrowDownToLine,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  Clock3,
+  CloudUpload,
+  Code2,
+  ExternalLink,
+  FileArchive,
+  FileCode2,
+  FolderGit2,
+  Github,
+  GitBranch,
+  LayoutDashboard,
+  LockKeyhole,
+  Menu,
+  Search,
+  Shield,
+  ShieldAlert,
+  ShieldCheck,
+  ShieldQuestion,
+  Terminal,
+  TriangleAlert,
+  UploadCloud,
+  X,
+} from "lucide-react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  BarChart,
+  Bar,
+  Cell,
+} from "recharts";
+import Tag from "../ui/SeverityTag";
+function Finding({ finding, index }) {
+  const [open, setOpen] = useState(index === 0);
+  const ai =
+    finding.ai_explanation || finding.ai_suggestion || finding.ai_patch;
+  return (
+    <article className="finding">
+      <button
+        className="finding-title"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+      >
+        <div className="finding-name">
+          <Tag name={finding.ai_severity || finding.severity} />
+          <div>
+            <b>
+              {finding.message ||
+                finding.rule_id ||
+                "Vulnerabilidade encontrada"}
+            </b>
+            <small>
+              <FileCode2 size={13} />
+              {finding.file_path || "Arquivo não informado"}
+              {finding.line ? " · Linha " + finding.line : ""} ·{" "}
+              {finding.tool || "SAST"}
+            </small>
+          </div>
+        </div>
+        <ChevronDown className={open ? "rotate" : ""} size={19} />
+      </button>
+      {open && (
+        <div className="finding-body">
+          <div className="finding-meta">
+            <span>
+              Regra: <b>{finding.rule_id || "—"}</b>
+            </span>
+            <span>
+              Ferramenta: <b>{finding.tool || "—"}</b>
+            </span>
+            <span>
+              Falso positivo:{" "}
+              <b>
+                {finding.is_false_positive === true
+                  ? "Sim"
+                  : finding.is_false_positive === false
+                    ? "Não"
+                    : "Não avaliado"}
+              </b>
+            </span>
+          </div>
+          <h4>O que foi identificado</h4>
+          <p>
+            {finding.ai_explanation ||
+              finding.message ||
+              "A API não retornou explicação adicional para este achado."}
+          </p>
+          <h4>Como corrigir</h4>
+          <p>
+            {finding.ai_suggestion ||
+              "Ainda não há uma recomendação automática disponível para este achado."}
+          </p>
+          {finding.ai_patch && (
+            <>
+              <h4>Patch sugerido</h4>
+              <pre className="code-block">
+                <code>{finding.ai_patch}</code>
+              </pre>
+            </>
+          )}
+          {finding.taint_source && (
+            <p className="taint">
+              <b>Origem:</b> {finding.taint_source}
+            </p>
+          )}
+          {finding.taint_sink && (
+            <p className="taint">
+              <b>Destino:</b> {finding.taint_sink}
+            </p>
+          )}
+          {!ai && (
+            <small className="muted">
+              O enriquecimento por IA pode não estar disponível para esta
+              análise.
+            </small>
+          )}
+        </div>
+      )}
+    </article>
+  );
+}
+import "./FindingCard.css";
 export default Finding;
