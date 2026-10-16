@@ -96,6 +96,12 @@ function Finding({ finding, index }) {
               Ferramenta: <b>{finding.tool || "—"}</b>
             </span>
             <span>
+              CWE: <b>{finding.cwe || "—"}</b>
+            </span>
+            <span>
+              OWASP: <b>{finding.owasp || "—"}</b>
+            </span>
+            <span>
               Falso positivo:{" "}
               <b>
                 {finding.is_false_positive === true
