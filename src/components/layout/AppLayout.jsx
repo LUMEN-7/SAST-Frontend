@@ -31,6 +31,7 @@ import {
   FileCode2,
   FolderGit2,
   GitBranch,
+  Users,
   LayoutDashboard,
   Bell,
   SlidersHorizontal,
@@ -94,7 +95,7 @@ function Layout({ children, dashboard = false }) {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [mobileOpen]);
-  const pageTitle = currentPath === "/account" ? "Meu perfil" : currentPath === "/rules" ? "Regras" : currentPath === "/local-analyses" ? "Scan local" : currentPath.startsWith("/repositories/")
+  const pageTitle = currentPath === "/groups" ? "Grupos" : currentPath === "/account" ? "Meu perfil" : currentPath === "/rules" ? "Regras" : currentPath === "/local-analyses" ? "Scan local" : currentPath.startsWith("/repositories/")
     ? "Histórico do repositório"
     : currentPath.startsWith("/analysis/")
       ? "Detalhes da análise"
@@ -108,7 +109,8 @@ function Layout({ children, dashboard = false }) {
   return (
     <div className="app tool-app">
       <aside className={"tool-sidebar" + (mobileOpen ? " is-mobile-open" : "")}>
-        <div className="mobile-nav-header"><Brand /><button type="button" className="mobile-nav-toggle" aria-expanded={mobileOpen} aria-controls="workspace-nav" aria-label={mobileOpen ? "Fechar navegação" : "Abrir navegação"} onClick={() => setMobileOpen(value => !value)}>{mobileOpen ? <X size={22} /> : <Menu size={22} />}</button></div>
+        <div className="mobile-nav-header"><Brand /><button type="button" className="mobile-nav-toggle" aria-expanded={mobileOpen} aria-controls="sidebar-navigation" aria-label={mobileOpen ? "Fechar navegação" : "Abrir navegação"} onClick={() => setMobileOpen(value => !value)}>{mobileOpen ? <X size={22} /> : <Menu size={22} />}</button></div>
+        <div className="sidebar-navigation" id="sidebar-navigation">
         <div className="sidebar-caption">WORKSPACE</div>
         <nav ref={navRef} className="side-nav sliding-nav" id="workspace-nav" aria-label="Navegação principal">
           {navHighlight && <span className="nav-sliding-highlight" style={navHighlight} aria-hidden="true" />}
@@ -127,6 +129,8 @@ function Layout({ children, dashboard = false }) {
             <Bell size={18} /> Alertas
           </NavLink>
         </nav>
+        <div className="sidebar-groups-section"><div className="sidebar-caption">EQUIPE</div><nav className="side-nav groups-nav" id="groups-nav" aria-label="Equipe"><NavLink to="/groups"><Users size={18} /> Grupos</NavLink></nav></div>
+        </div>
         <div className="sidebar-bottom">
           <NavLink to="/account" className="sidebar-user sidebar-account" aria-label="Minha conta">
             <span className="avatar-guest">
@@ -143,7 +147,7 @@ function Layout({ children, dashboard = false }) {
       <div className="tool-main">
         <div className="tool-toolbar">
           <div className="tool-breadcrumb">
-            <span>WORKSPACE</span>
+            <span>{currentPath === "/groups" ? "EQUIPE" : "WORKSPACE"}</span>
             <span>/</span>
             <b>{pageTitle}</b>
           </div>

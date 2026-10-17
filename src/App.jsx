@@ -1,5 +1,6 @@
+import Onboarding from "./pages/Auth/Onboarding";
 import DesignReview, { NotFound } from "./pages/DesignReview";
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import AuthPage from "./pages/Auth/Auth";
 import Account from "./pages/Auth/Account";
@@ -14,9 +15,12 @@ import Rules from "./pages/Rules/Rules";
 import Groups from "./pages/Groups/Groups";
 
 function Protected() {
-  const { user, loading } = useAuth();
+  const { user, loading, needsOnboarding } = useAuth();
+  const location = useLocation();
   if (loading) return <div className="auth-loading" role="status">Carregando sessão…</div>;
-  return user ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (needsOnboarding && location.pathname !== "/onboarding") return <Navigate to="/onboarding" replace />;
+  return <Outlet />;
 }
 export default function App() {
   return (
@@ -26,6 +30,7 @@ export default function App() {
       <Route path="/register" element={<AuthPage key="register" />} />
       <Route path="/forgot-password" element={<AuthPage key="reset" />} />
       <Route element={<Protected />}>
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/account" element={<Account />} />
       <Route path="/local-analyses" element={<LocalAnalyses />} />
       <Route path="/" element={<Dashboard />} />
@@ -42,4 +47,3 @@ export default function App() {
     </Routes></AuthProvider>
   );
 }
-

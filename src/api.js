@@ -42,6 +42,11 @@ export async function request(path, options = {}) {
   return response;
 }
 
+async function optionalJson(response) {
+  const body = await response.text();
+  return body.trim() ? JSON.parse(body) : null;
+}
+
 export const api = {
   summary: (repositoryId, days = 30) => {
     const params = new URLSearchParams({ days: String(days) });
@@ -49,6 +54,7 @@ export const api = {
     return request(`/api/v1/dashboard/summary?${params}`).then((r) => r.json());
   },
   repos: () => request("/api/v1/repos").then((r) => r.json()),
+  groupSummary: (id) => request("/api/v1/dashboard/summary?" + new URLSearchParams({ group_id: String(id) })).then(r => r.json()),
   groups: () => request("/api/v1/groups").then((r) => r.json()),
   createGroup: (name) =>
     request("/api/v1/groups", {
@@ -57,13 +63,13 @@ export const api = {
       body: JSON.stringify({ name }),
     }).then((r) => r.json()),
   addGroupRepo: (groupId, repositoryId) =>
-    request(`/api/v1/groups/${groupId}/repos/${repositoryId}`, { method: "POST" }).then((r) => r.json()),
+    request(`/api/v1/groups/${encodeURIComponent(groupId)}/repos/${encodeURIComponent(repositoryId)}`, { method: "POST" }).then(optionalJson),
   addGroupMember: (groupId, email, role) =>
-    request(`/api/v1/groups/${groupId}/members`, {
+    request(`/api/v1/groups/${encodeURIComponent(groupId)}/members`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, role }),
-    }).then((r) => r.json()),
+    }).then(optionalJson),
   repoFindings: (id) =>
     request(`/api/v1/repos/${id}/findings`).then((r) => r.json()),
   submit: (file, repositoryId) => {
