@@ -28,7 +28,7 @@ function useLocalTriage(id) {
   return [map,update];
 }
 function CodeSnippet({finding}) {
-  const provided = finding.code_snippet || finding.snippet || finding.code || finding.ai_patch || "";
+  const provided = finding.code_snippet || finding.snippet || finding.code || "";
   const lines = String(provided).split("\n").slice(0,24);
   const start = Number(finding.snippet_start_line || finding.start_line || finding.line || 1);
   const affected = Number(finding.line || 0);
@@ -49,7 +49,7 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
     let n=sort==="severity"?rank(a)-rank(b):sort==="date"?(new Date(a.created_at||0)-new Date(b.created_at||0)):String(a[sort]||"").localeCompare(String(b[sort]||""));
     return ascending?n:-n;
   }),[rows,sev,state,query,sort,ascending]);
-  const active=visible.find(f=>f._key===focused) || visible[0] || null;
+  const active=focused==="__closed__" ? null : (visible.find(f=>f._key===focused) || visible[0] || null);
   const checked=visible.length>0 && visible.every(f=>selected.includes(f._key));
   const counts=["critical","high","medium","low","info"].map(s=>({name:s,count:rows.filter(f=>level(f)===s).length}));
   function setRowStatus(items,value){setStatuses(items,value);setSelected([]);}
