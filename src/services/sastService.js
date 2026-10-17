@@ -1,9 +1,5 @@
-import * as demo from "../mocks/sastData";
-import { repositoryHistory } from "../mocks/repositoryHistory";
 import { api, readRecent } from "../api";
 
-export const isDemo = import.meta.env.VITE_DATA_MODE !== "api";
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function riskFromCounts(critical = 0, high = 0, medium = 0) {
   if (critical) return "critical";
@@ -22,37 +18,32 @@ function mapRepo(repo, findings = []) {
     name: (repo.full_name || "").split("/").pop(),
     full_name: repo.full_name,
     owner: repo.owner,
-    branch: "main",
-    language: repo.has_workflow ? "com workflow" : "",
+    branch: repo.default_branch || repo.branch || null,
+    language: repo.language || "",
     html_url: repo.html_url,
     has_workflow: repo.has_workflow,
     risk: riskFromCounts(counts.critical, counts.high, counts.medium),
     findings: findings.length,
-    private: false,
+    private: repo.private ?? null,
   };
 }
 
 export const sastService = {
   async getRepositories() {
-    if (isDemo) {
-      await delay(100);
-      return demo.repositories;
-    }
-    const data = await api.repos();
+    const data = await api.repos().catch(error => {
+      if (error.status === 404) return { repos: [] };
+      throw error;
+    });
     const repos = data.repos || [];
     const withFindings = await Promise.all(
       repos.map(async (repo) =>
-        mapRepo(repo, await api.repoFindings(repo.id).catch(() => [])),
+        mapRepo(repo, await api.repoFindings(repo.id)),
       ),
     );
     return withFindings;
   },
 
   async getAnalyses() {
-    if (isDemo) {
-      await delay(100);
-      return demo.analyses;
-    }
     return readRecent().map((item) => ({
       id: item.id,
       repository_id: item.repository_id,
@@ -65,22 +56,14 @@ export const sastService = {
   },
 
   async getAnalysisHistory() {
-    if (isDemo) {
-      await delay(100);
-      return [...demo.analyses, ...repositoryHistory];
-    }
     return this.getAnalyses();
   },
 
   async getAlerts() {
-    if (isDemo) {
-      await delay(100);
-      return demo.alerts;
-    }
     const repos = await this.getRepositories();
     const alerts = [];
     for (const repo of repos) {
-      const findings = await api.repoFindings(repo.id).catch(() => []);
+      const findings = await api.repoFindings(repo.id);
       findings
         .filter(
           (item) => item.severity === "critical" || item.severity === "high",
@@ -94,7 +77,7 @@ export const sastService = {
             title: item.rule_id || "Achado",
             description: item.message || "",
             file: item.file_path,
-            created_at: new Date().toISOString(),
+            created_at: item.created_at || null,
             read: false,
             resultado: item.resultado,
           });
@@ -110,10 +93,8 @@ export const sastService = {
       this.getAlerts(),
     ]);
     const repo = repos.find((item) => String(item.id) === String(id)) || null;
-    const summary = isDemo ? null : await api.summary(id, 30).catch(() => null);
-    const analyses = isDemo
-      ? repositoryHistory.filter((item) => item.repository_id === id)
-      : jobs.filter((item) => item.repository_id === id);
+    const summary = await api.summary(id, 30);
+    const analyses = jobs.filter((item) => String(item.repository_id) === String(id));
     return {
       repo,
       analyses,
@@ -123,46 +104,13 @@ export const sastService = {
   },
 
   async getSummary(repositoryId) {
-    if (isDemo) return demo.summary;
-    return api.summary(repositoryId);
+    return api.summary(repositoryId).catch(error => {
+      if (error.status === 404) return null;
+      throw error;
+    });
   },
 
   async getAnalysis(id) {
-    if (isDemo && String(id).startsWith("demo-")) {
-      const row = [...demo.analyses, ...repositoryHistory].find(
-        (item) => item.id === id,
-      );
-      if (!row) throw new Error("Análise não encontrada");
-      const findings = demo.demoFindings.slice(
-        0,
-        Math.min(row.total_findings, 3),
-      );
-      return {
-        status: {
-          job_id: id,
-          status: "completed",
-          created_at: row.created_at,
-          finished_at: row.created_at,
-        },
-        result: {
-          job_id: id,
-          status: "completed",
-          total_findings: row.total_findings,
-          severity_summary: {
-            critical: row.critical,
-            high: row.high,
-            medium: row.medium,
-            low: row.low,
-          },
-          findings,
-        },
-        gate: {
-          gate: row.critical + row.high > 0 ? "fail" : "pass",
-          blocking_findings: row.critical + row.high,
-          threshold: "high",
-        },
-      };
-    }
     const [status, result, gate] = await Promise.all([
       api.status(id),
       api.result(id),

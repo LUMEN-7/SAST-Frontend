@@ -57,13 +57,13 @@ import {
   Cell,
 } from "recharts";
 import { readRecent } from "../../api";
-import { sastService, isDemo } from "../../services/sastService";
+import { sastService } from "../../services/sastService";
 import MetricDetailsModal from "../../components/dashboard/MetricDetailsModal";
 import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Stat from "../../components/dashboard/StatCard";
 import Tag from "../../components/ui/SeverityTag";
-import ZipUpload from "../../components/upload/ZipUpload";
+
 import Status from "../../components/ui/AnalysisStatus";
 import Empty from "../../components/ui/EmptyState";
 import "./Dashboard.css";
@@ -92,27 +92,24 @@ function Dashboard() {
     .map(([key, value]) => ({ name: severity(key).label, key, value }))
     .sort((a, b) => severity(b.key).rank - severity(a.key).rank);
   const trend = summary?.trend_last_7_days || [];
-  const [demoAnalyses, setDemoAnalyses] = useState([]);
+  const [analyses, setAnalyses] = useState([]);
   useEffect(() => {
     sastService
       .getAnalyses()
-      .then(setDemoAnalyses)
+      .then(setAnalyses)
       .catch(() => {});
     sastService
       .getAlerts()
       .then(setAlerts)
       .catch(() => {});
   }, []);
-  const displayedRecent = isDemo ? demoAnalyses : recent;
+  const displayedRecent = recent;
   return (
     <Layout dashboard>
       <main className="container page dashboard">
         <div className="page-heading">
           <div>
             <h1>Visão geral</h1>
-            {isDemo && (
-              <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
-            )}
             <p>Acompanhe os resultados das análises dos seus projetos.</p>
           </div>
           <button
@@ -125,7 +122,6 @@ function Dashboard() {
             <Activity size={16} /> Atualizar
           </button>
         </div>
-        <ZipUpload />
         {error && (
           <div role="alert" className="notice error">
             Não foi possível carregar os dados do backend: {error}
@@ -287,7 +283,7 @@ function Dashboard() {
                   const matchedAlert = alerts.find(
                     (a) => a.file === f.file_path,
                   );
-                  const matchedAnalysis = demoAnalyses.find(
+                  const matchedAnalysis = analyses.find(
                     (a) => a.repository_id === matchedAlert?.repository_id,
                   );
                   const target = matchedAnalysis
@@ -398,7 +394,7 @@ function Dashboard() {
         <MetricDetailsModal
           type={metricOpen}
           onClose={() => setMetricOpen(null)}
-          analyses={demoAnalyses}
+          analyses={analyses}
           alerts={alerts}
           summary={summary}
         />

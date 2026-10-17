@@ -9,12 +9,14 @@ import {
 import { Link } from "react-router-dom";
 import Layout from "../../components/layout/AppLayout";
 import GitHubSource from "../../components/repositories/GitHubSource";
-import { sastService, isDemo } from "../../services/sastService";
+import { sastService } from "../../services/sastService";
 import { severity } from "../../utils/security";
 import "./Repositories.css";
 
 export default function Repositories() {
   const [repos, setRepos] = useState([]),
+    [loading, setLoading] = useState(true),
+    [error, setError] = useState(""),
     [analyses, setAnalyses] = useState([]),
     [query, setQuery] = useState("");
   useEffect(() => {
@@ -26,7 +28,8 @@ export default function Repositories() {
           setAnalyses(jobs);
         }
       })
-      .catch(() => {});
+      .catch(err => { if (active) setError(err.message); })
+      .finally(() => { if (active) setLoading(false); });
     return () => {
       active = false;
     };
@@ -45,9 +48,6 @@ export default function Repositories() {
             <h1>Repositórios</h1>
             <p>Projetos acompanhados pela plataforma.</p>
           </div>
-          {isDemo && (
-            <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
-          )}
         </div>
         <section className="panel repository-connect">
           <div className="panel-head">
@@ -74,7 +74,7 @@ export default function Repositories() {
               />
             </label>
           </div>
-          {filtered.length ? (
+          {loading ? <p role="status">Carregando repositórios…</p> : error ? <div role="alert" className="notice error">{error}</div> : filtered.length ? (
             <div className="repo-list">
               <div className="repo-list-heading">
                 <span>REPOSITÓRIO</span>

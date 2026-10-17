@@ -1,3 +1,5 @@
+import { auth } from "./firebase";
+import { readApiError } from "./services/apiError";
 const BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 const TOKEN_KEY = "lumen-sast-token";
 
@@ -11,7 +13,7 @@ export function saveToken(token) {
 }
 
 function headers(extra = {}) {
-  const token = readToken();
+  const token = auth ? "" : readToken();
   return {
     "ngrok-skip-browser-warning": "true",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -20,22 +22,14 @@ function headers(extra = {}) {
 }
 
 export async function request(path, options = {}) {
+  if (auth) await auth.authStateReady();
+  const firebaseToken = await auth?.currentUser?.getIdToken();
   const response = await fetch(BASE + path, {
     ...options,
-    headers: headers(options.headers),
+    headers: { ...headers(options.headers), ...(firebaseToken ? { Authorization: `Bearer ${firebaseToken}` } : {}) },
   });
   if (!response.ok) {
-    let error = "";
-    try {
-      const body = await response.json();
-      error =
-        typeof body.detail === "string"
-          ? body.detail
-          : JSON.stringify(body.detail || body);
-    } catch {
-      error = await response.text();
-    }
-    throw new Error(error || "Não foi possível comunicar com a API.");
+    throw await readApiError(response);
   }
   return response;
 }
@@ -83,7 +77,12 @@ const RECENT_KEY = "lumen-sast-recent-v1";
 
 export function readRecent() {
   try {
-    return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+    const items = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+    if (!Array.isArray(items)) return [];
+    // Discard entries left by the retired demonstration mode.
+    const real = items.filter(item => typeof item?.id === "string" && !item.id.startsWith("demo-"));
+    if (real.length !== items.length) localStorage.setItem(RECENT_KEY, JSON.stringify(real));
+    return real;
   } catch {
     return [];
   }

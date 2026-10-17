@@ -59,10 +59,12 @@ import {
   Cell,
 } from "recharts";
 import Brand from "./Brand";
+import { useAuth } from "../../auth/AuthContext";
 import "./AppLayout.css";
 function Layout({ children, dashboard = false }) {
+  const { user } = useAuth();
   const currentPath = useLocation().pathname;
-  const pageTitle = currentPath.startsWith("/repositories/")
+  const pageTitle = currentPath === "/account" ? "Meu perfil" : currentPath === "/local-analyses" ? "Análises locais" : currentPath.startsWith("/repositories/")
     ? "Histórico do repositório"
     : currentPath.startsWith("/analysis/")
       ? "Detalhes da análise"
@@ -88,6 +90,7 @@ function Layout({ children, dashboard = false }) {
           <NavLink to="/analyses">
             <ClipboardList size={18} /> Análises
           </NavLink>
+          <NavLink to="/local-analyses"><FileCode2 size={18} /> Análises locais</NavLink>
           <NavLink to="/alerts">
             <Bell size={18} /> Alertas
           </NavLink>
@@ -98,8 +101,8 @@ function Layout({ children, dashboard = false }) {
               <Shield size={18} />
             </span>
             <span>
-              <b>Sessão visitante</b>
-              <small>Consulta de análises</small>
+              <b>{user?.displayName || "Minha conta"}</b>
+              <small>{user?.email}</small>
             </span>
           </div>
         </div>
@@ -111,6 +114,7 @@ function Layout({ children, dashboard = false }) {
             <span>/</span>
             <b>{pageTitle}</b>
           </div>
+          <Link className="account-link" to="/account">Minha conta</Link>
         </div>
         {children}
       </div>

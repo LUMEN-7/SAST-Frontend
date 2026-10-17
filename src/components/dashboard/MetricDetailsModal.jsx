@@ -6,7 +6,6 @@ import Tag from "../ui/SeverityTag";
 import MonthlyAnalysisAccordion from "./MonthlyAnalysisAccordion";
 import ProjectFindingsAccordion from "./ProjectFindingsAccordion";
 import SeverityFilesList from "./SeverityFilesList";
-import { isDemo } from "../../services/sastService";
 import "./MetricDetailsModal.css";
 
 const config = {
@@ -58,7 +57,7 @@ export default function MetricDetailsModal({
         <div className="metric-dialog-header">
           <div>
             <span className="metric-eyebrow">
-              VISÃO DETALHADA {isDemo ? "· DEMONSTRAÇÃO" : ""}
+              VISÃO DETALHADA
             </span>
             <h2 id="metric-title">{title}</h2>
             <p>{subtitle}</p>

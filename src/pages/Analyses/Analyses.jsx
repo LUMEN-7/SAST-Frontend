@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, ClipboardList } from "lucide-react";
 import Layout from "../../components/layout/AppLayout";
 import Empty from "../../components/ui/EmptyState";
-import { sastService, isDemo } from "../../services/sastService";
+import { sastService } from "../../services/sastService";
 import RepositoryAnalysisAccordion from "../../components/analysis/RepositoryAnalysisAccordion";
 import AnalysisLegend from "../../components/analysis/AnalysisLegend";
 import "./Analyses.css";
@@ -65,9 +65,6 @@ export default function Analyses() {
             <h1>Análises</h1>
             <p>Histórico de verificações de segurança por repositório.</p>
           </div>
-          {isDemo && (
-            <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
-          )}
         </div>
         <section className="panel">
           <div className="panel-head">

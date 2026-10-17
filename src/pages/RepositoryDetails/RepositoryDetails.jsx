@@ -23,7 +23,7 @@ import Status from "../../components/ui/AnalysisStatus";
 import SecurityResult from "../../components/ui/SecurityResult";
 import AnalysisLegend from "../../components/analysis/AnalysisLegend";
 import Tag from "../../components/ui/SeverityTag";
-import { sastService, isDemo } from "../../services/sastService";
+import { sastService } from "../../services/sastService";
 import { date } from "../../utils/security";
 import "./RepositoryDetails.css";
 
@@ -102,9 +102,6 @@ export default function RepositoryDetails() {
                 <h1>{repo.full_name}</h1>
                 <p>{repo.language} · Histórico de segurança</p>
               </div>
-              {isDemo && (
-                <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
-              )}
             </div>
             <div className="repo-detail-stats">
               <div className="panel">

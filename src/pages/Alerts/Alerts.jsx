@@ -3,14 +3,20 @@ import { Bell, ShieldAlert } from "lucide-react";
 import Layout from "../../components/layout/AppLayout";
 import Empty from "../../components/ui/EmptyState";
 import { severity } from "../../utils/security";
-import { sastService, isDemo } from "../../services/sastService";
+import { sastService } from "../../services/sastService";
 import { date } from "../../utils/security";
 import "./Alerts.css";
 export default function Alerts() {
   const [alerts, setAlerts] = useState([]),
+    [loading, setLoading] = useState(true),
+    [error, setError] = useState(""),
     [filter, setFilter] = useState("all");
   useEffect(() => {
-    sastService.getAlerts().then(setAlerts);
+    let active = true;
+    sastService.getAlerts().then(items => { if (active) setAlerts(items); })
+      .catch(err => { if (active) setError(err.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
   const visible = alerts.filter(
     (a) => filter === "all" || a.severity === filter,
@@ -23,9 +29,6 @@ export default function Alerts() {
             <h1>Alertas</h1>
             <p>Ocorrências de segurança dos repositórios monitorados.</p>
           </div>
-          {isDemo && (
-            <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
-          )}
         </div>
         <section className="panel">
           <div className="panel-head">
@@ -46,7 +49,7 @@ export default function Alerts() {
               <option value="low">Baixa</option>
             </select>
           </div>
-          {visible.length ? (
+          {loading ? <p role="status">Carregando alertas…</p> : error ? <div role="alert" className="notice error">{error}</div> : visible.length ? (
             <div className="alert-list">
               {visible.map((a) => (
                 <article className="alert-item" key={a.id}>

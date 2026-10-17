@@ -57,8 +57,6 @@ import {
   Cell,
 } from "recharts";
 import { api, readRecent } from "../../api";
-import { sastService, isDemo } from "../../services/sastService";
-import { analyses as demoAnalyses } from "../../mocks/sastData";
 import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Status from "../../components/ui/AnalysisStatus";
@@ -79,25 +77,12 @@ function Analysis() {
   useEffect(() => {
     if (queryFile) setSearch(queryFile);
   }, [queryFile]);
-  const recent =
-    readRecent().find((x) => x.id === id) ||
-    demoAnalyses.find((x) => x.id === id);
-  const demoMode = isDemo && id.startsWith("demo-");
+  const recent = readRecent().find((x) => x.id === id);
   useEffect(() => {
     let active = true,
       interval;
     async function refresh() {
       try {
-        if (demoMode) {
-          const x = await sastService.getAnalysis(id);
-          if (active) {
-            setStatus(x.status);
-            setResult(x.result);
-            setGate(x.gate);
-          }
-          clearInterval(interval);
-          return;
-        }
         const s = await api.status(id);
         if (!active) return;
         setStatus(s);
@@ -128,18 +113,8 @@ function Analysis() {
       active = false;
       clearInterval(interval);
     };
-  }, [id, demoMode]);
+  }, [id]);
   useEffect(() => {
-    if (demoMode) {
-      const row = demoAnalyses.find((x) => x.id === id);
-      if (row)
-        setGate({
-          gate: row.critical + row.high > 0 ? "fail" : "pass",
-          blocking_findings: row.critical + row.high,
-          threshold,
-        });
-      return;
-    }
     let live = true;
     api
       .gate(id, threshold)
@@ -175,9 +150,7 @@ function Analysis() {
   async function download() {
     setReporting(true);
     try {
-      const md = demoMode
-          ? "# Relatório de demonstração\n\nDados fictícios para visualização de interface."
-          : await api.report(id),
+      const md = await api.report(id),
         blob = new Blob([md], { type: "text/markdown;charset=utf-8" }),
         url = URL.createObjectURL(blob),
         a = document.createElement("a");
@@ -202,9 +175,6 @@ function Analysis() {
             <span className="section-kicker">
               RESULTADO / INSPEÇÃO DE CÓDIGO
             </span>
-            {demoMode && (
-              <span className="neutral-pill">DADOS DE DEMONSTRAÇÃO</span>
-            )}
             <h1>
               {recent?.repo_name || recent?.name || "Análise " + id.slice(0, 8)}
               <span className="heading-dot">.</span>
@@ -242,7 +212,7 @@ function Analysis() {
           </div>
           <div>
             <span>ORIGEM</span>
-            <b>{demoMode ? "GitHub Actions (simulado)" : "Upload ZIP"}</b>
+            <b>{status?.source || result?.source || "Não informada"}</b>
           </div>
         </div>
         {status?.error_message && (
@@ -250,7 +220,7 @@ function Analysis() {
             Erro da análise: {status.error_message}
           </div>
         )}
-        {!["completed", "failed"].includes(status?.status) && (
+        {!error && !["completed", "failed"].includes(status?.status) && (
           <div className="processing">
             <div className="spinner" />
             <div>
