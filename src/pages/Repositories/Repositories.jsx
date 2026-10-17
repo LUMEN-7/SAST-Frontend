@@ -74,7 +74,7 @@ export default function Repositories() {
               />
             </label>
           </div>
-          {loading ? <p role="status">Carregando repositórios…</p> : error ? <div role="alert" className="notice error">{error}</div> : filtered.length ? (
+          {loading ? <div className="ares-repos-loading" role="status" aria-label="Carregando repositórios">{Array.from({length:4},(_,i)=><div className="ares-repos-placeholder" key={i}><div className="ares-skeleton" style={{width:"42%"}}/><div className="ares-skeleton" style={{width:"18%"}}/><div className="ares-skeleton" style={{width:"12%"}}/></div>)}</div> : error ? <div role="alert" className="notice error">{error}</div> : filtered.length ? (
             <div className="repo-list">
               <div className="repo-list-heading">
                 <span>REPOSITÓRIO</span>
@@ -102,7 +102,7 @@ export default function Repositories() {
                       >
                         {repo.full_name}
                       </Link>
-                      <small>{repo.language}</small>
+                      <small>{repo.branch ? "branch: " + repo.branch + " · " : ""}{repo.language}</small>
                     </div>
                     <span className={"repo-risk risk-" + repo.risk}>
                       {severity(repo.risk).label}

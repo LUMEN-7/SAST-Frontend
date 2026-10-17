@@ -33,6 +33,7 @@ import {
   GitBranch,
   LayoutDashboard,
   Bell,
+  SlidersHorizontal,
   ClipboardList,
   LockKeyhole,
   Menu,
@@ -64,7 +65,7 @@ import "./AppLayout.css";
 function Layout({ children, dashboard = false }) {
   const { user } = useAuth();
   const currentPath = useLocation().pathname;
-  const pageTitle = currentPath === "/account" ? "Meu perfil" : currentPath === "/local-analyses" ? "Análises locais" : currentPath.startsWith("/repositories/")
+  const pageTitle = currentPath === "/account" ? "Meu perfil" : currentPath === "/rules" ? "Regras" : currentPath === "/local-analyses" ? "Análises locais" : currentPath.startsWith("/repositories/")
     ? "Histórico do repositório"
     : currentPath.startsWith("/analysis/")
       ? "Detalhes da análise"
@@ -91,6 +92,7 @@ function Layout({ children, dashboard = false }) {
             <ClipboardList size={18} /> Análises
           </NavLink>
           <NavLink to="/local-analyses"><FileCode2 size={18} /> Análises locais</NavLink>
+          <NavLink to="/rules"><SlidersHorizontal size={18} /> Regras</NavLink>
           <NavLink to="/alerts">
             <Bell size={18} /> Alertas
           </NavLink>

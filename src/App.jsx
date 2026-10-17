@@ -9,6 +9,7 @@ import RepositoryDetails from "./pages/RepositoryDetails/RepositoryDetails";
 import Analyses from "./pages/Analyses/Analyses";
 import Alerts from "./pages/Alerts/Alerts";
 import LocalAnalyses from "./pages/LocalAnalyses/LocalAnalyses";
+import Rules from "./pages/Rules/Rules";
 
 function Protected() {
   const { user, loading } = useAuth();
@@ -30,6 +31,7 @@ export default function App() {
       <Route path="/repositories/:id" element={<RepositoryDetails />} />
       <Route path="/analyses" element={<Analyses />} />
       <Route path="/alerts" element={<Alerts />} />
+      <Route path="/rules" element={<Rules />} />
       <Route path="/analysis/:id" element={<Analysis />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

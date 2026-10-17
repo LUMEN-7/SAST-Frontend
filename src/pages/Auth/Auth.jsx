@@ -87,9 +87,9 @@ export default function AuthPage() {
     <button type="submit" className="auth-submit" disabled={busy || !auth}>{busy ? "Aguarde…" : reset ? "Enviar link de recuperação" : pendingLink ? "Confirmar senha e vincular" : register ? "Criar conta" : "Entrar"}<ArrowRight size={17} /></button>
   </form>;
   return <main className="auth-page">
-    <aside className="auth-intro"><Brand /><div><span className="auth-eyebrow">SEGURANÇA EM CADA COMMIT</span><h1>Seu código.<br />Sua confiança.</h1><p>Centralize suas análises de segurança e acompanhe o que precisa de atenção em um só lugar.</p><div className="auth-feature"><ShieldCheck size={23} /><span>Uma conta para acompanhar<br />toda a sua jornada de segurança.</span></div></div><small>LUMEN SAST · SECURITY INTELLIGENCE</small></aside>
+    <aside className="auth-intro"><Brand /><div><span className="auth-eyebrow">SAST / REVISÃO DE CÓDIGO</span><h1>Revisão de segurança<br />de código.</h1><p>Consulte scans, revise vulnerabilidades e acompanhe os repositórios conectados.</p><div className="auth-feature"><ShieldCheck size={23} /><span>Acesso aos resultados e ao histórico<br />das análises.</span></div></div><small>ARES · LUMEN SECURITY</small></aside>
     <section className="auth-content"><div className="auth-card">
-      <span className="auth-eyebrow">BEM-VINDO À LUMEN</span>
+      <span className="auth-eyebrow">ACESSO AO ARES</span>
       <h2>{pendingLink ? "Confirme sua conta" : reset ? "Recuperar senha" : register ? "Crie sua conta" : "Entre na sua conta"}</h2>
       {!pendingLink && <p>{reset ? "Enviaremos um link para você criar uma nova senha." : "Acesse com sua conta preferida ou use seu e-mail."}</p>}
       {!auth && <div className="auth-notice" role="status">Configure as variáveis VITE_FIREBASE no arquivo .env.local para habilitar a autenticação.</div>}
