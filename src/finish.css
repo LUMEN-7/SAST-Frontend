@@ -89,3 +89,54 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .sidebar-account.active{border-color:var(--border);background:var(--surface-elevated)}
 .sidebar-account-label{display:block;color:var(--accent-text);font-size:11px;margin-top:8px}
 @media(prefers-reduced-motion:reduce){.theme-switch-thumb,.sidebar-account{transition:none}}
+
+/* Navigation: stable geometry, distinct hover and current-page states. */
+.tool-sidebar .side-nav{gap:6px}
+.tool-sidebar .side-nav a{
+ position:relative;min-height:44px;border:1px solid transparent!important;
+ background:transparent!important;box-shadow:none!important;border-radius:5px!important;
+ color:var(--text-muted)!important;font-weight:500!important;
+ transition:background .15s ease,border-color .15s ease,color .15s ease
+}
+.tool-sidebar .side-nav a svg{color:var(--text-muted)!important;transition:color .15s ease}
+@media(hover:hover){
+ .tool-sidebar .side-nav a:hover{background:var(--surface-elevated)!important;border-color:var(--border)!important;color:var(--text)!important}
+ .tool-sidebar .side-nav a:hover svg{color:var(--text)!important}
+}
+.tool-sidebar .side-nav a.active{
+ background:var(--accent-subtle)!important;
+ border-color:color-mix(in srgb,var(--accent) 32%,var(--border))!important;
+ color:var(--text)!important;font-weight:600!important
+}
+.tool-sidebar .side-nav a.active::before{content:"";position:absolute;left:-1px;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0;background:var(--accent)}
+.tool-sidebar .side-nav a.active svg{color:var(--accent-text)!important}
+@media(hover:hover){.tool-sidebar .side-nav a.active:hover{background:color-mix(in srgb,var(--accent) 20%,var(--surface))!important;border-color:var(--accent)!important}}
+.tool-sidebar .side-nav a:active{background:var(--accent-subtle)!important}
+.tool-sidebar .side-nav a:focus-visible,.tool-sidebar .sidebar-account:focus-visible{outline:3px solid var(--accent)!important;outline-offset:2px}
+.tool-sidebar .sidebar-bottom{padding:16px 0 0}
+.tool-sidebar .sidebar-account{
+ display:flex;align-items:center;gap:10px;width:100%;min-height:80px;padding:12px;
+ border:1px solid var(--border);border-radius:5px;background:var(--surface);
+ transition:background .15s ease,border-color .15s ease
+}
+.tool-sidebar .sidebar-account .avatar-guest{width:36px;height:36px;border-radius:5px;color:var(--text)!important;font-size:12px;font-weight:600}
+.tool-sidebar .sidebar-account>span:nth-child(2){min-width:0;flex:1}
+.tool-sidebar .sidebar-account b{font-size:12px;line-height:1.5;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool-sidebar .sidebar-account small{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;color:var(--text-muted)!important}
+.tool-sidebar .sidebar-account .sidebar-account-label{font-size:11px;line-height:1.5;margin-top:6px;color:var(--text-muted)}
+.sidebar-account-arrow{flex-shrink:0;color:var(--text-muted);transform:rotate(-90deg)}
+@media(hover:hover){
+ .tool-sidebar .sidebar-account:hover{background:var(--surface-elevated);border-color:var(--text-muted)}
+ .tool-sidebar .sidebar-account:hover .sidebar-account-label,.tool-sidebar .sidebar-account:hover .sidebar-account-arrow{color:var(--accent-text)}
+}
+.tool-sidebar .sidebar-account.active{background:var(--accent-subtle);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+.tool-sidebar .sidebar-account.active .sidebar-account-label,.tool-sidebar .sidebar-account.active .sidebar-account-arrow{color:var(--accent-text)}
+@media(prefers-reduced-motion:reduce){.tool-sidebar .side-nav a,.tool-sidebar .side-nav a svg,.tool-sidebar .sidebar-account{transition:none}}
+
+.tool-sidebar .sliding-nav{position:relative;isolation:isolate}
+.nav-sliding-highlight{position:absolute;left:0;top:0;pointer-events:none;z-index:-1;background:var(--accent-subtle);border:1px solid color-mix(in srgb,var(--accent) 32%,var(--border));border-radius:5px;transition:transform 240ms cubic-bezier(.2,.8,.2,1),width 240ms cubic-bezier(.2,.8,.2,1),height 240ms cubic-bezier(.2,.8,.2,1)}
+.nav-sliding-highlight::before{content:"";position:absolute;left:-1px;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0;background:var(--accent)}
+.tool-sidebar .sliding-nav a.active{background:transparent!important;border-color:transparent!important}
+.tool-sidebar .sliding-nav a.active::before{display:none}
+@media(hover:hover){.tool-sidebar .sliding-nav a.active:hover{background:var(--accent-subtle)!important;border-color:transparent!important}}
+@media(prefers-reduced-motion:reduce){.nav-sliding-highlight{transition:none}}

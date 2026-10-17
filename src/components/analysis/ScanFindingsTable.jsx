@@ -84,11 +84,11 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
       <th>{header("severity","Severidade")}</th><th>{header("rule_id","Regra")}</th><th>{header("file_path","Arquivo:linha")}</th><th>Status</th><th>{header("date","Data")}</th><th/>
     </tr></thead><tbody>{visible.map(f=><tr key={f._key} className={active?._key===f._key?"is-focused":""}>
       <td><input aria-label={"Selecionar "+(f.rule_id||"achado")} type="checkbox" checked={selected.includes(f._key)} onChange={e=>setSelected(old=>e.target.checked?[...old,f._key]:old.filter(k=>k!==f._key))}/></td>
-      <td><span className="ares-severity"><i className={"ares-severity-point sev-"+level(f)}/>{severity(level(f)).label}</span></td>
-      <td><button className="ares-rule-link" onClick={()=>setFocused(f._key)}>{f.rule_id||"Regra não informada"}</button><small>{f.message}</small></td>
-      <td className="ares-mono">{f.file_path||"—"}{f.line?":"+f.line:""}</td>
-      <td><span className={"ares-state state-"+f._status}>{options.find(x=>x.value===f._status)?.label||"Aberto"}</span></td>
-      <td className="ares-muted">{f.created_at?date(f.created_at):"—"}</td>
+      <td data-label="Severidade"><span className="ares-severity"><i className={"ares-severity-point sev-"+level(f)}/>{severity(level(f)).label}</span></td>
+      <td data-label="Regra"><button className="ares-rule-link" onClick={()=>setFocused(f._key)}>{f.rule_id||"Regra não informada"}</button><small>{f.message}</small></td>
+      <td data-label="Arquivo:linha" className="ares-mono">{f.file_path||"—"}{f.line?":"+f.line:""}</td>
+      <td data-label="Status"><span className={"ares-state state-"+f._status}>{options.find(x=>x.value===f._status)?.label||"Aberto"}</span></td>
+      <td data-label="Data" className="ares-muted">{f.created_at?date(f.created_at):"—"}</td>
       <td><button className="ares-open" aria-label="Abrir detalhe" onClick={()=>setFocused(f._key)}><ChevronRight size={16}/></button></td>
     </tr>)}</tbody></table>
       {!visible.length && <div className="ares-no-results">{busy?"Carregando achados…":rows.length?"Nenhum achado corresponde aos filtros.":"Nenhum achado neste scan."}</div>}
@@ -100,5 +100,3 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
     <footer className="ares-shortcuts"><span><kbd>J</kbd>/<kbd>K</kbd> navegar</span><span><kbd>F</kbd> falso positivo</span><span><kbd>R</kbd> corrigido</span><span><kbd>A</kbd> aceitar risco</span><span>Atalhos funcionam fora de campos de edição</span></footer>
   </section>;
 }
-
-

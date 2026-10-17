@@ -9,6 +9,7 @@ import "./ares-theme.css";
 import "./ares-compact.css";
 import "./ares-palette.css";
 import "./finish.css";
+import "./responsive.css";
 try { document.documentElement.dataset.aresTheme = localStorage.getItem("ares-theme") || "dark"; } catch { document.documentElement.dataset.aresTheme = "dark"; }
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -17,5 +18,3 @@ createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>,
 );
-
-
