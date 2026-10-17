@@ -1,15 +1,15 @@
 import GitHubIcon from "../../components/ui/GitHubIcon";
 import { useEffect, useState } from "react";
 import {
-  GitBranch,
+  Plus,
   FolderGit2,
   Search,
   ArrowUpRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "../../components/layout/AppLayout";
-import GitHubSource from "../../components/repositories/GitHubSource";
-import { sastService } from "../../services/sastService";
+import AddRepository from "../../components/repositories/AddRepository";
+import { api } from "../../api";
 import { severity } from "../../utils/security";
 import "./Repositories.css";
 
@@ -17,15 +17,16 @@ export default function Repositories() {
   const [repos, setRepos] = useState([]),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(""),
-    [analyses, setAnalyses] = useState([]),
+    [adding, setAdding] = useState(false),
+    [refresh, setRefresh] = useState(0),
     [query, setQuery] = useState("");
   useEffect(() => {
     let active = true;
-    Promise.all([sastService.getRepositories(), sastService.getAnalyses()])
-      .then(([items, jobs]) => {
+    setLoading(true); setError("");
+    api.repos()
+      .then(data => {
         if (active) {
-          setRepos(items);
-          setAnalyses(jobs);
+          setRepos(Array.isArray(data) ? data : data.repos || []);
         }
       })
       .catch(err => { if (active) setError(err.message); })
@@ -33,7 +34,7 @@ export default function Repositories() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [refresh]);
   const filtered = repos.filter((repo) =>
     [repo.full_name, repo.branch, repo.language]
       .join(" ")
@@ -48,16 +49,9 @@ export default function Repositories() {
             <h1>Repositórios</h1>
             <p>Projetos acompanhados pela plataforma.</p>
           </div>
+          <button type="button" className="btn btn-primary" onClick={() => setAdding(true)}><Plus size={17} /> Adicionar</button>
         </div>
-        <section className="panel repository-connect">
-          <div className="panel-head">
-            <div>
-              <h2>Conectar repositório</h2>
-              <p>Configure um projeto para acompanhar suas verificações.</p>
-            </div>
-          </div>
-          <GitHubSource />
-        </section>
+        {adding && <AddRepository onClose={() => setAdding(false)} onConnected={() => { setAdding(false); setRefresh(value => value + 1); }} />}
         <section className="panel connected-repositories">
           <div className="panel-head">
             <div>
@@ -83,13 +77,6 @@ export default function Repositories() {
                 <span></span>
               </div>
               {filtered.map((repo) => {
-                const related = analyses
-                  .filter((a) => a.repository_id === repo.id)
-                  .sort(
-                    (a, b) =>
-                      new Date(b.created_at || 0) - new Date(a.created_at || 0),
-                  );
-                const job = related[0];
                 return (
                   <div className="repo-item" key={repo.id}>
                     <span className="repo-symbol">
@@ -105,10 +92,10 @@ export default function Repositories() {
                       <small>{repo.branch ? "branch: " + repo.branch + " · " : ""}{repo.language}</small>
                     </div>
                     <span className={"repo-risk risk-" + repo.risk}>
-                      {severity(repo.risk).label}
+                      {repo.risk ? severity(repo.risk).label : "Sem avaliação"}
                     </span>
                     <div className="repo-count">
-                      <b>{repo.findings}</b>
+                      <b>{repo.findings ?? "—"}</b>
                       <small>achados</small>
                     </div>
                     {
@@ -127,11 +114,11 @@ export default function Repositories() {
           ) : (
             <div className="repos-empty">
               <GitHubIcon size={25} />
-              <b>Nenhum repositório encontrado</b>
+              <b>{query ? "Nenhum repositório encontrado" : "Nenhum repositório conectado"}</b>
               <p>
                 {query
                   ? "Tente outro termo."
-                  : "A integração ainda não retornou repositórios."}
+                  : "Clique em Adicionar para conectar seu primeiro repositório."}
               </p>
             </div>
           )}

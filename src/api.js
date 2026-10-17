@@ -30,11 +30,13 @@ function headers(extra = {}) {
 }
 
 export async function request(path, options = {}) {
+  const { sastToken = false, ...fetchOptions } = options;
   if (auth) await auth.authStateReady();
   const firebaseToken = await auth?.currentUser?.getIdToken();
+  const repositoryToken = sastToken ? readToken() || firebaseToken : "";
   const response = await fetch(BASE + path, {
-    ...options,
-    headers: { ...headers(options.headers), ...(firebaseToken ? { Authorization: `Bearer ${firebaseToken}` } : {}) },
+    ...fetchOptions,
+    headers: { ...headers(fetchOptions.headers), ...(firebaseToken ? { Authorization: `Bearer ${firebaseToken}` } : {}), ...(repositoryToken ? { "X-Sast-Token": repositoryToken } : {}) },
   });
   if (!response.ok) {
     throw await readApiError(response);
@@ -53,8 +55,14 @@ export const api = {
     if (repositoryId) params.set("repository_id", repositoryId);
     return request(`/api/v1/dashboard/summary?${params}`).then((r) => r.json());
   },
-  repos: () => request("/api/v1/repos").then((r) => r.json()),
-  findings: () => request("/api/v1/findings").then((r) => r.json()),
+  repos: () => request("/api/v1/repos", { sastToken: true }).then((r) => r.json()),
+  availableRepos: (page = 1) => request(`/api/v1/repos/available?${new URLSearchParams({ page: String(page), per_page: "20" })}`, { sastToken: true }).then(r => r.json()),
+  connectRepo: ({ github_id, full_name, owner, html_url }) => request("/api/v1/repos", {
+    sastToken: true,
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ github_id, full_name, owner, html_url }),
+  }).then(optionalJson),
   groupSummary: (id) => request("/api/v1/dashboard/summary?" + new URLSearchParams({ group_id: String(id) })).then(r => r.json()),
   groups: () => request("/api/v1/groups").then((r) => r.json()),
   createGroup: (name) =>
