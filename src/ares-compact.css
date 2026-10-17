@@ -89,3 +89,5 @@ td{color:#d2d4d7!important;border-color:#33363a!important}
 @media(max-width:760px){.tool-app{grid-template-columns:1fr}.tool-sidebar{border-bottom:1px solid var(--ares-line)!important}.tool-main .page{width:calc(100% - 28px)}}
 @media(prefers-reduced-motion:reduce){.ares-skeleton{animation:none}}
 @media(prefers-color-scheme:light){:root:not([data-ares-theme="dark"]){--ares-bg:#f7f7f7;--ares-sidebar:#f0f0f1;--ares-surface:#fff;--ares-raised:#eee;--ares-line:#d5d6d8;--ares-text:#24262a;--ares-muted:#5f6369}}
+
+.ares-repos-placeholder{height:51px;display:flex;align-items:center;gap:22px;padding:12px;border-bottom:1px solid var(--ares-line)}.ares-repos-placeholder:last-child{border-bottom:0}.ares-repos-placeholder .ares-skeleton{flex-shrink:0}
