@@ -10,15 +10,16 @@
   --text: #ECEDEF;
   --text-muted: #9AA1AB;
 
-  /* Bronze */
-  --accent: #D4924A;
-  --accent-hover: #E0A25C;
-  --accent-pressed: #B87A38;
-  --accent-subtle: rgba(212, 146, 74, 0.12);
-  --on-accent: #17110A;
+  /* Accent */
+  --accent: #B23A48;
+  --accent-hover: #C64A58;
+  --accent-pressed: #962F3B;
+  --accent-subtle: rgba(178, 58, 72, 0.14);
+  --on-accent: #FFFFFF;
+  --accent-text: #E8707D;
 
   /* Risk severity */
-  --sev-critical: #E5484D;
+  --sev-critical: #FF5A4F;
   --sev-high: #F0734A;
   --sev-medium: #E2C14B;
   --sev-low: #6E8BB5;
@@ -66,3 +67,4 @@ body,.app,.tool-app,.auth-page,.auth-content,.auth-loading{background:var(--bg)!
 .ares-triage .ares-rule-link:hover{color:var(--accent-hover)}
 .ares-table input[type="checkbox"],.ares-rule-toggle input{accent-color:var(--accent)!important}
 .ares-skeleton{background:var(--surface-elevated)!important}
+

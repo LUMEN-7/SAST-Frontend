@@ -1,1 +1,2 @@
-.security-result{display:inline-flex;align-items:center;gap:7px;border-radius:6px;padding:6px 9px;font-size:10px;font-weight:800;white-space:nowrap}.security-result-dot{height:6px;width:6px;border-radius:50%;background:currentColor}.security-result-approved{color:#317d5f;background:#e3f4ec}.security-result-rejected{color:#b35160;background:#fde9eb}.security-result-pending{color:#7b8994;background:#edf1f3}
+.security-result{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:11px;font-weight:500;white-space:nowrap;color:var(--text);background:var(--surface-elevated)}
+.security-result-dot{height:6px;width:6px;border-radius:50%;background:var(--text-muted)}

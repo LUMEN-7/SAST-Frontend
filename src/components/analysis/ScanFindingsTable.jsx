@@ -42,9 +42,10 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
   const [query,setQuery]=useState(queryFile),[sev,setSev]=useState("all"),[state,setState]=useState("all");
   const [sort,setSort]=useState("severity"),[ascending,setAscending]=useState(false);
   const [selected,setSelected]=useState([]),[focused,setFocused]=useState(null);
+  const [notice,setNotice]=useState("");
   const [map,setStatuses]=useLocalTriage(analysisId);
   useEffect(()=>setQuery(queryFile),[queryFile]);
-  const rows = useMemo(()=>findings.map((finding,index)=>({...finding,_key:identity(finding)+"#"+index,_status:map[identity(finding)] || (finding.is_false_positive ? "false_positive" : "open")})),[findings,map]);
+  const rows = useMemo(()=>findings.map((finding,index)=>({...finding,_key:identity(finding)+"#"+index,_status:map[identity(finding)] || (finding.is_false_positive ? "false_positive" : options.some(x=>x.value===finding.status) ? finding.status : "open")})),[findings,map]);
   const visible=useMemo(()=>rows.filter(f=>(sev==="all"||level(f)===sev)&&(state==="all"||f._status===state)&&[f.rule_id,f.file_path,f.message,f.cwe].join(" ").toLowerCase().includes(query.trim().toLowerCase())).sort((a,b)=>{
     let n=sort==="severity"?rank(a)-rank(b):sort==="date"?(new Date(a.created_at||0)-new Date(b.created_at||0)):String(a[sort]||"").localeCompare(String(b[sort]||""));
     return ascending?n:-n;
@@ -52,7 +53,7 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
   const active=focused==="__closed__" ? null : (visible.find(f=>f._key===focused) || visible[0] || null);
   const checked=visible.length>0 && visible.every(f=>selected.includes(f._key));
   const counts=["critical","high","medium","low","info"].map(s=>({name:s,count:rows.filter(f=>level(f)===s).length}));
-  function setRowStatus(items,value){setStatuses(items,value);setSelected([]);}
+  function setRowStatus(items,value){setStatuses(items,value);setSelected([]);setNotice(items.length+" achado(s) · "+options.find(x=>x.value===value)?.label+" · Salvo neste navegador");}
   useEffect(()=>{
     const handle=e=>{
       const target=e.target;
@@ -77,6 +78,7 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
       <select aria-label="Filtrar status" value={state} onChange={e=>setState(e.target.value)}><option value="all">Todos os status</option>{options.map(x=><option key={x.value} value={x.value}>{x.label}</option>)}</select>
       {selected.length>0&&<div className="ares-bulk"><span>{selected.length} selecionado(s)</span><select aria-label="Alterar status em massa" value="" onChange={e=>{if(e.target.value)setRowStatus(rows.filter(r=>selected.includes(r._key)),e.target.value);}}><option value="">Alterar status…</option>{options.map(x=><option key={x.value} value={x.value}>{x.label}</option>)}</select></div>}
     </div>
+    {notice && <div className="design-toast" role="status">{notice}</div>}
     <div className="ares-table-wrap"><table className="ares-table"><thead><tr>
       <th className="ares-check"><input aria-label="Selecionar todos os achados filtrados" type="checkbox" checked={checked} onChange={e=>setSelected(e.target.checked?visible.map(f=>f._key):[])}/></th>
       <th>{header("severity","Severidade")}</th><th>{header("rule_id","Regra")}</th><th>{header("file_path","Arquivo:linha")}</th><th>Status</th><th>{header("date","Data")}</th><th/>
@@ -98,3 +100,5 @@ export default function ScanFindingsTable({findings=[],analysisId,queryFile="",b
     <footer className="ares-shortcuts"><span><kbd>J</kbd>/<kbd>K</kbd> navegar</span><span><kbd>F</kbd> falso positivo</span><span><kbd>R</kbd> corrigido</span><span><kbd>A</kbd> aceitar risco</span><span>Atalhos funcionam fora de campos de edição</span></footer>
   </section>;
 }
+
+

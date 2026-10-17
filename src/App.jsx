@@ -1,3 +1,4 @@
+import DesignReview, { NotFound } from "./pages/DesignReview";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import AuthPage from "./pages/Auth/Auth";
@@ -19,6 +20,7 @@ function Protected() {
 export default function App() {
   return (
     <AuthProvider><Routes>
+      <Route path="/design" element={<DesignReview />} />
       <Route path="/login" element={<AuthPage key="login" />} />
       <Route path="/register" element={<AuthPage key="register" />} />
       <Route path="/forgot-password" element={<AuthPage key="reset" />} />
@@ -34,7 +36,8 @@ export default function App() {
       <Route path="/rules" element={<Rules />} />
       <Route path="/analysis/:id" element={<Analysis />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes></AuthProvider>
   );
 }
+

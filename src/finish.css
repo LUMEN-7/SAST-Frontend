@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+:root{font-family:Inter,system-ui,sans-serif;color-scheme:dark}
+:root[data-ares-theme="light"]{--bg:#F5F6F8;--surface:#FFFFFF;--surface-elevated:#ECEEF1;--border:#CFD3DA;--text:#1C2026;--text-muted:#555E6B;--accent-text:#962F3B;color-scheme:light}
+body,button,input,select,textarea,.ares-triage{font-family:Inter,system-ui,sans-serif}
+h1,h2,h3,h4,.tool-main .page-heading h1,.panel h2,.stat strong,.quick-scan h2{font-family:Inter,system-ui,sans-serif!important;font-weight:600!important}
+code,pre,kbd,.ares-mono,.ares-rule-link,.ares-code-row,.ares-rule-row strong,.ares-detail h3,.file-name{font-family:'JetBrains Mono',monospace!important}
+.ares-wordmark b,.tool-sidebar .ares-wordmark b{font-family:Inter,system-ui,sans-serif!important;font-weight:600!important}
+.ares-wordmark small,.tool-sidebar .ares-wordmark small,.sidebar-caption,.eyebrow,.section-kicker,.auth-eyebrow,.auth-intro .auth-eyebrow{color:var(--text-muted)!important;font-family:Inter,system-ui,sans-serif!important}
+:focus-visible{outline:3px solid var(--accent)!important;outline-offset:2px}
+::selection{background:var(--accent-subtle);color:var(--text)}
+*{scrollbar-width:thin;scrollbar-color:var(--border) var(--bg)}
+button,input,select,textarea{border-radius:4px}
+input,select,textarea{accent-color:var(--accent);color:var(--text)}
+select{color-scheme:inherit}
+option{background:var(--surface-elevated)!important;color:var(--text)!important}
+input::placeholder{color:var(--text-muted)!important}
+button:disabled{opacity:.45;cursor:not-allowed}
+.btn:hover{transform:none}
+.btn,.auth-submit{font-weight:600!important}
+.text-link,.back-link,.auth-forgot,.auth-switch a,.auth-email-option>summary{color:var(--accent-text)!important}
+.side-nav a,.side-nav a svg,.sidebar-user b,.file-link,.repo-name-link,.repo-info small,.repo-count b,.repo-count small,td,.finding-title,.finding-name b,.gate-content b,.source-header b,.source-field input,.search-field input,.job-lookup input{color:var(--text)!important}
+.side-nav a:not(.active),.side-nav a svg,.sidebar-user small,td small,.source-help,.github-banner p,.upload p,.upload small,.finding-meta,.ares-code-number,.ares-shortcuts,.ares-state,.ares-state.state-fixed,.ares-state.state-false_positive,.ares-state.state-accepted,.status,.status-completed,.status-failed,.empty,.empty p{color:var(--text-muted)!important}
+.ares-table tbody tr:hover,.repo-item:hover{background:var(--surface-elevated)!important}
+.ares-table input,.ares-table select{min-height:14px}
+.ares-search input,.ares-rule-search input{background:transparent!important;color:var(--text)!important}
+.ares-search:focus-within,.ares-rule-search:focus-within,.source-field:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.ares-search input:focus-visible,.ares-rule-search input:focus-visible{outline:none!important}
+.ares-detail,.ares-code,.ares-kv,.ares-toolbar,.ares-shortcuts,.ares-rule-notice,.auth-notice,.processing,.notice.error,.auth-error{border-color:var(--border)!important}
+.ares-rule-notice,.auth-notice,.processing,.source-notice,.notice.error,.auth-error{background:var(--surface-elevated)!important;color:var(--text)!important;border-radius:4px!important}
+.ares-code-row,.ares-kv code,.ares-kv span:nth-child(even),.ares-rule-row,.ares-detail-info p,.finding-body p,.code-block{color:var(--text)!important}
+.ares-code-row.is-vulnerable{background:var(--surface-elevated)!important;box-shadow:inset 2px 0 var(--text-muted)!important}
+.ares-detail,.finding-body,.code-block,.upload,.github-banner,.account-card{background:var(--surface)!important}
+.ares-shortcuts kbd,.avatar-guest,.repo-symbol,.quick-scan-icon,.github-icon,.upload-symbol,.gate-icon,.gate-icon.pass,.gate-icon.fail{background:var(--surface-elevated)!important;color:var(--text-muted)!important;border-color:var(--border)!important;box-shadow:none}
+.severity{background:transparent!important;border:0!important;color:var(--text)!important;padding:2px 0!important}
+.severity-dot{background:var(--sev)!important}
+.repo-risk,.ares-rule-sev{color:var(--text)!important}
+.ares-detail h4,.ares-triage-head h2{font-weight:600}
+.ares-skeleton{animation:none}
+.btn-danger{background:transparent!important;border:1px solid var(--sev-critical)!important;color:var(--text)!important}
+.btn-danger:hover{background:var(--surface-elevated)!important}
+.theme-button{display:inline-flex;align-items:center;gap:8px;background:var(--surface-elevated);color:var(--text);border:1px solid var(--border);padding:8px 12px;font-size:12px}
+.tool-toolbar{gap:12px;backdrop-filter:none}.tool-toolbar .tool-breadcrumb{margin-right:auto}
+.design-note{color:var(--text-muted);font-size:12px;margin-bottom:24px}
+.design-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.design-tabs button{padding:8px 12px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted)}
+.design-tabs button[aria-pressed=true]{background:var(--accent-subtle);color:var(--text);border-color:var(--accent)}
+.design-state{border:1px solid var(--border);background:var(--surface);padding:24px;border-radius:5px;margin-bottom:16px}
+.design-state h2{font-size:16px;margin-bottom:8px}.design-state p{font-size:13px;color:var(--text-muted)}
+.design-meta{display:flex;gap:24px;flex-wrap:wrap;color:var(--text-muted);font-size:12px;margin:16px 0 24px}
+.design-progress{height:4px;background:var(--border);margin-top:16px}.design-progress span{display:block;width:64%;height:100%;background:var(--text-muted)}
+.design-skeleton{display:grid;gap:20px}.design-skeleton span{display:block;height:12px;background:var(--surface-elevated);width:75%}
+.design-toast{border:1px solid var(--border);border-radius:4px;padding:12px 16px;background:var(--surface-elevated);font-size:12px;margin:16px 0}
+.design-table{border-collapse:collapse;width:100%;font-size:12px}.design-table td,.design-table th{padding:16px;text-align:left;border-bottom:1px solid var(--border)}
+.design-table small{display:block;margin-top:4px}
+@media(max-width:760px){.design-table-wrap{overflow:auto}.design-table{min-width:720px}.tool-toolbar{flex-wrap:wrap;height:auto;min-height:58px;padding:12px}.tool-breadcrumb{font-size:10px}}
+.auth-theme{display:flex;justify-content:flex-end;margin-bottom:24px}.design-toast{margin:12px}.ares-triage .ares-table th{font-size:10px;text-transform:uppercase;letter-spacing:.04em}.ares-triage .ares-table td{font-size:12px}.ares-triage .ares-table td small{font-size:11px}.ares-table .ares-mono,.ares-triage .ares-mono,.ares-triage code,.ares-rule-link{font-size:12px}.ares-severity{white-space:nowrap}
+
+/* Keep status explanations and actual indicators on the same neutral palette. */
+.status-dot,.status-completed .status-dot,.status-failed .status-dot,.status-running .status-dot,.status-queued .status-dot,.status-processing .status-dot{background:var(--text-muted)}
+.empty svg{color:var(--text-muted)!important}
+.analyses-feedback{color:var(--text-muted)}
+
+/* Semantic status colors: shared by the legend and result indicators. */
+:root{--status-success:#35D98A;--status-processing:#4DA3FF;--status-danger:#FF5A4F;--status-neutral:var(--text-muted)}
+:root[data-ares-theme="light"]{--status-success:#087F46;--status-processing:#0769CE;--status-danger:#D52D25}
+.legend-success .legend-dot,.status-completed .status-dot,.security-result-approved .security-result-dot{background:var(--status-success)}
+.legend-info .legend-dot,.status-running .status-dot,.status-processing .status-dot{background:var(--status-processing)}
+.legend-danger .legend-dot,.status-failed .status-dot,.security-result-rejected .security-result-dot{background:var(--status-danger)}
+.legend-neutral .legend-dot,.status-queued .status-dot,.status-pending .status-dot,.security-result-pending .security-result-dot{background:var(--status-neutral)}
+
+
+/* Saturated semantic labels match the legend and live status indicators. */
+.analysis-legend-badge.legend-success,.security-result-approved,.status.status-completed{color:var(--status-success)!important}
+.analysis-legend-badge.legend-info,.status.status-running,.status.status-processing{color:var(--status-processing)!important}
+.analysis-legend-badge.legend-danger,.security-result-rejected,.status.status-failed{color:var(--status-danger)!important}
+.analysis-legend-badge.legend-success,.security-result-approved{background:color-mix(in srgb,var(--status-success) 12%,transparent)}
+.analysis-legend-badge.legend-info{background:color-mix(in srgb,var(--status-processing) 12%,transparent)}
+.analysis-legend-badge.legend-danger,.security-result-rejected{background:color-mix(in srgb,var(--status-danger) 12%,transparent)}
+.analysis-legend-badge{padding:6px 8px;border-radius:4px}
+
+.theme-switch{position:relative;display:inline-flex;align-items:center;justify-content:space-between;gap:16px;isolation:isolate;width:76px;height:36px;padding:0 10px;border:1px solid var(--border);border-radius:20px;background:var(--surface-elevated);color:var(--text-muted);flex-shrink:0;cursor:pointer}
+.theme-switch svg{z-index:1;flex-shrink:0}
+.theme-switch-thumb{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--border);transition:transform .18s ease}
+.theme-switch[aria-checked=true] .theme-switch-thumb{transform:translateX(40px)}
+.theme-switch[aria-checked=true] svg:last-child,.theme-switch[aria-checked=false] svg:nth-child(2){color:var(--text)}
+.theme-switch:hover{border-color:var(--text-muted)}
+.sidebar-account{padding:12px 8px;border:1px solid transparent;border-radius:5px;transition:background .15s}
+.sidebar-account:hover{background:var(--surface-elevated)}
+.sidebar-account.active{border-color:var(--border);background:var(--surface-elevated)}
+.sidebar-account-label{display:block;color:var(--accent-text);font-size:11px;margin-top:8px}
+@media(prefers-reduced-motion:reduce){.theme-switch-thumb,.sidebar-account{transition:none}}

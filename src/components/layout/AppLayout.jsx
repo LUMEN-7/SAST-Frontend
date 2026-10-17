@@ -60,12 +60,13 @@ import {
   Cell,
 } from "recharts";
 import Brand from "./Brand";
+import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../../auth/AuthContext";
 import "./AppLayout.css";
 function Layout({ children, dashboard = false }) {
   const { user } = useAuth();
   const currentPath = useLocation().pathname;
-  const pageTitle = currentPath === "/account" ? "Meu perfil" : currentPath === "/rules" ? "Regras" : currentPath === "/local-analyses" ? "Análises locais" : currentPath.startsWith("/repositories/")
+  const pageTitle = currentPath === "/account" ? "Meu perfil" : currentPath === "/rules" ? "Regras" : currentPath === "/local-analyses" ? "Scan local" : currentPath.startsWith("/repositories/")
     ? "Histórico do repositório"
     : currentPath.startsWith("/analysis/")
       ? "Detalhes da análise"
@@ -85,28 +86,28 @@ function Layout({ children, dashboard = false }) {
           <NavLink end to="/">
             <LayoutDashboard size={18} /> Visão geral
           </NavLink>
+          <NavLink to="/local-analyses"><FileCode2 size={18} /> Scan local</NavLink>
           <NavLink to="/repositories">
             <Github size={18} /> Repositórios
           </NavLink>
           <NavLink to="/analyses">
             <ClipboardList size={18} /> Análises
           </NavLink>
-          <NavLink to="/local-analyses"><FileCode2 size={18} /> Análises locais</NavLink>
           <NavLink to="/rules"><SlidersHorizontal size={18} /> Regras</NavLink>
           <NavLink to="/alerts">
             <Bell size={18} /> Alertas
           </NavLink>
         </nav>
         <div className="sidebar-bottom">
-          <div className="sidebar-user">
+          <NavLink to="/account" className="sidebar-user sidebar-account" aria-label="Minha conta">
             <span className="avatar-guest">
-              <Shield size={18} />
+              {(user?.displayName || user?.email || "A").slice(0,2).toUpperCase()}
             </span>
             <span>
               <b>{user?.displayName || "Minha conta"}</b>
-              <small>{user?.email}</small>
+              <small>{user?.email}</small><span className="sidebar-account-label">Minha conta</span>
             </span>
-          </div>
+          </NavLink>
         </div>
       </aside>
       <div className="tool-main">
@@ -116,7 +117,7 @@ function Layout({ children, dashboard = false }) {
             <span>/</span>
             <b>{pageTitle}</b>
           </div>
-          <Link className="account-link" to="/account">Minha conta</Link>
+          <ThemeToggle />
         </div>
         {children}
       </div>
