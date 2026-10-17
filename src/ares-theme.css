@@ -1,0 +1,153 @@
+/* ARES — Lumen Security | Product visual system
+   Overrides the legacy Studio and neutral tool styles without changing application behavior. */
+:root{
+  --ares-bg:#0b1424;--ares-sidebar:#080f1c;--ares-surface:#111d30;
+  --ares-raised:#16243a;--ares-line:#2a3b52;--ares-text:#eff3fa;
+  --ares-muted:#9caec3;--ares-accent:#d99a62;--ares-accent-light:#f3bf88;
+  --ink:var(--ares-text);--muted:var(--ares-muted);--line:var(--ares-line);
+  --green:#59c4ab;--mint:#d99a62;
+  font-family:'Manrope',sans-serif;background:var(--ares-bg);color:var(--ares-text);
+  color-scheme:dark;
+}
+body,.app,.tool-app{background:var(--ares-bg);color:var(--ares-text)}
+::selection{background:#d99a6266;color:white}
+:focus-visible{outline:2px solid var(--ares-accent-light)!important;outline-offset:3px}
+.tool-app{grid-template-columns:250px minmax(0,1fr);background:radial-gradient(ellipse 70% 40% at 75% -10%,#20334c 0%,transparent 75%),var(--ares-bg)}
+.tool-sidebar{background:linear-gradient(180deg,#0b1525,#080f1c 65%);border-right:1px solid #23354a;padding:26px 16px 18px}
+.tool-sidebar .brand{padding:4px 10px 31px;gap:12px;min-width:0}
+.ares-brand .ares-brand-mark,.tool-sidebar .brand .ares-brand-mark,.brand .ares-brand-mark{
+  width:43px;height:43px;position:relative;flex:none;border:1px solid #78563d;
+  border-radius:12px;background:linear-gradient(145deg,#2e2b2c,#172337)!important;
+  color:#e8aa73!important;box-shadow:inset 0 1px #ffffff16,0 5px 20px #0002
+}
+.ares-brand-mark>svg{opacity:.46}
+.ares-mark-core{position:absolute;font:800 15px 'Outfit',sans-serif;letter-spacing:-.07em;top:12px;left:16px;color:#ffd1a2}
+.brand .ares-brand-copy b,.tool-sidebar .brand .ares-brand-copy b{font:800 23px/1 'Outfit',sans-serif;letter-spacing:.13em;color:#f5f4f2!important}
+.brand .ares-brand-copy small,.tool-sidebar .brand .ares-brand-copy small{font:700 8px/1.5 'DM Mono',monospace;color:#a5b5c4!important;letter-spacing:1.45px;margin-top:5px}
+.ares-brand-registered{color:var(--ares-accent)}
+.sidebar-caption{padding:22px 15px 10px;color:#637991;font:700 10px 'DM Mono',monospace;letter-spacing:1.8px}
+.side-nav{gap:6px}
+.side-nav a{font-size:12px;font-weight:700;color:#a5b5c7;padding:13px 14px;border:1px solid transparent;border-radius:9px;transition:background .18s,border-color .18s,color .18s}
+.side-nav a svg{color:#8298af;flex:none}
+.side-nav a:hover{background:#16283e;color:#f7f9fc;border-color:#283d55}
+.side-nav a:hover svg{color:#eab685}
+.side-nav a.active{background:linear-gradient(90deg,#2a2d35,#1b293c);border-color:#5b473d;color:#f6e3d1;box-shadow:inset 3px 0 #e3a56e}
+.side-nav a.active svg{color:#eab07e}
+.sidebar-bottom{border-color:#26394f;padding-top:18px}
+.avatar-guest{border:1px solid #4c4b50;background:#242d3c;color:#e0af87;border-radius:10px}
+.sidebar-user b{color:#eff4fa;font-size:12px}.sidebar-user small{color:#8497ad}
+.tool-main{background:transparent}
+.tool-toolbar{background:#0f1b2bed;border-bottom:1px solid #293a50;backdrop-filter:blur(16px);height:73px}
+.tool-breadcrumb{color:#788da5;letter-spacing:.025em}
+.tool-breadcrumb b{color:#f2f5fa}
+.tool-toolbar .account-link{border:1px solid #33465e;border-radius:9px;color:#d4e2f0;padding:10px 15px;font-weight:700;background:#17253a;transition:.18s}
+.tool-toolbar .account-link:hover{background:#233550;border-color:#8c684e;color:#fff}
+.tool-main .page{padding-top:37px}
+.tool-main .section-kicker,.eyebrow,.section-kicker{color:#c99b74!important}
+.tool-main .page-heading h1,.page-heading h1{font:700 clamp(27px,3vw,35px)/1.2 'Outfit',sans-serif;color:#f0f4fa!important;letter-spacing:-.8px}
+.tool-main .page-heading p,.page-heading p{color:#9aabc0}
+.tool-main .stat,.tool-main .panel,.tool-main .scan-meta,.stat,.panel,.scan-meta{
+  background:linear-gradient(160deg,#152239,#101b2d);border:1px solid #293b53;
+  border-radius:13px;box-shadow:0 10px 35px #03091219;color:#f2f5fa
+}
+.tool-main .panel{border-color:#2a3b52}
+.tool-main .stat{border-radius:13px;position:relative;overflow:hidden}
+.tool-main .stat:before{display:block;height:2px;background:linear-gradient(90deg,#db9a62,#a66a45 50%,transparent)}
+.tool-main .stat-top{color:#a5b8cc}.tool-main .stat-top svg{color:#e0a774}
+.tool-main .stat strong,.stat strong{color:#f5f7fc;font-family:'Outfit',sans-serif}
+.tool-main .stat small{color:#8299b3}
+.tool-main .panel h2,.panel h2{font:700 16px 'Outfit',sans-serif;color:#eff4fb}
+.panel-head p{color:#91a5bd}
+.quick-scan{background:linear-gradient(110deg,#1f3047,#16273e);border:1px solid #4f4a48;border-radius:15px;box-shadow:inset 0 1px #ffffff0b}
+.quick-scan h2{font:700 22px 'Outfit',sans-serif;color:#f7f0e8}
+.quick-scan p{color:#abbacd}
+.quick-scan-icon{background:#3f3936;color:#eab27c}
+.source-panel{background:#101c2e;border:1px solid #35465d;border-radius:11px}
+.source-header>svg{color:#e5a971}.source-header b{color:#f3f6fb}.source-header p{color:#9aadc3}
+.source-form label,.job-lookup label{color:#9aacbe}
+.source-field,.job-lookup input,.search-field{background:#0d1829;border:1px solid #354760;border-radius:8px;color:#acbdd1}
+.source-field input,.job-lookup input,.search-field input{color:#f1f5fb}
+.source-field input::placeholder,.job-lookup input::placeholder,.search-field input::placeholder{color:#778da6}
+.source-field svg{color:#b1a18e}
+.source-help{color:#8b9eb4!important}
+.source-notice{background:#243341;border:1px solid #455468;color:#d3dce8}
+.job-lookup{border-top-color:#2b3e54}
+.btn{border-radius:9px;transition:transform .16s,background .16s,border-color .16s}
+.btn-primary,.toolbar-action{background:#d99a62;color:#1a2029;box-shadow:none}
+.btn-primary:hover,.toolbar-action:hover{background:#efb47e;color:#111d2c}
+.btn-outline{background:#1a293f;border:1px solid #3d5068;color:#d6e3f1}
+.btn-outline:hover{background:#263953;border-color:#6e8198;color:#fff}
+.btn-subtle{background:#26364a;border-color:#44536a;color:#e6bd97}
+.tool-main .github-banner,.github-banner{background:#152238;border:1px solid #354960}
+.github-icon{background:#293548;color:#e1a676}
+.github-banner b{color:#eff4fa}.github-banner p{color:#98aabe}
+.neutral-pill{background:#223149;border:1px solid #394c64;color:#b9cbde}
+.table-scroll{scrollbar-color:#3b4c63 transparent}
+th{color:#91a7bf;border-color:#33455d}
+td{color:#c2cedb;border-color:#293a50}
+td small{color:#8d9fb3}
+.file-link{color:#e4edf5}.file-link svg{color:#dbaa81}
+.text-link,.back-link{color:#e8b37e}
+.text-link:hover,.back-link:hover{text-decoration:underline}
+.bar-line b{color:#d3deeb}.bar-track{background:#283951}
+.status{color:#b4c4d5}.status-completed{color:#63d1b4}.status-failed{color:#ff8c9b}
+.empty{color:#8298b0}.empty b{color:#dce6f0}.empty p{color:#90a5bc}.empty svg{color:#ad876d}
+.critical-file{border-color:#2a3b51}.file-index{color:#8a9eb6}.file-name{color:#dae5f0}.critical-file b{color:#f2b28c}
+.dashboard .critical-file-info small{color:#8396ae}
+.dashboard .critical-file-link{border-color:#42546c;color:#e9b88d}.dashboard .critical-file-link:hover{background:#283a50}
+.scan-meta span:first-child{color:#a1b3c9!important}.scan-meta b{color:#eef3fb}
+.finding{background:#131f32;border-color:#33465e;box-shadow:none}
+.finding-title{color:#edf3fb}.finding-title>svg{color:#a3b5c8}
+.finding-name b{color:#edf2f8}.finding-name small{color:#9aadc3}
+.finding-body{background:#101c2e;border-top-color:#33465c;color:#c0cfde}
+.finding-body h4{color:#f0c19a}.finding-meta{color:#9dabc0}.finding-meta b{color:#e1eaf6}.finding-body p{color:#b7c7d7}
+.code-block{background:#080f1c;border:1px solid #344960;color:#b8e1d7}
+.filter-pills button{background:#17263b;border:1px solid #33445a;color:#a8bbcf}
+.filter-pills button.selected{background:#bc8659;border-color:#d99a62;color:#111c29}
+.gate-panel select{background:#18283e;color:#e9f1fa;border-color:#425771}
+.gate-icon{background:#27364a;color:#adbed0}.gate-icon.pass{background:#183f39;color:#76d8b8}.gate-icon.fail{background:#493039;color:#f59eaa}
+.gate-content b{color:#edf5fc}.gate-content p{color:#a4b5c8}
+.processing{background:#152f38;border-color:#355a59;color:#9de7cd}
+.processing p{color:#a9c1c8}.spinner{border-color:#355b60;border-top-color:#e8a976}
+.upload,.upload-compact{background:#121e31;border:1px dashed #52637a;color:#dce7f2;box-shadow:none}
+.upload.dragging{background:#25334a;border-color:#e7a86d}
+.upload-symbol{background:#323744;color:#e7ae77}.upload b{color:#e8f0f8}.upload p{color:#9caec3}.upload small{color:#879bb2}
+.notice.error,.auth-error{background:#422630;border-color:#9a4e5b;color:#ffd0d5}
+.severity{border-radius:7px}
+.auth-page{background:#0e1829;color:#eaf0f8}
+.auth-intro{background:radial-gradient(circle at 100% 20%,#344052 0%,transparent 55%),linear-gradient(145deg,#18273d,#0b1322);border-right:1px solid #39485a}
+.auth-intro h1{color:#fff1e3}.auth-intro p{color:#aabdd0}
+.auth-intro .auth-eyebrow,.auth-feature{color:#e7ac76}.auth-feature{border-color:#46536a}
+.auth-intro>small{color:#8fa3b8}
+.auth-content{background:#101b2c}.auth-card h2,.auth-linking h3{color:#f2f5fa}.auth-card p{color:#9caec2}
+.auth-card label{color:#b9c8d8}
+.auth-card input,.auth-providers button{background:#17263a;color:#edf2f8;border-color:#40516a;border-radius:10px}
+.auth-card input:focus-visible{outline:2px solid #e2a774;outline-offset:1px}
+.auth-providers button:hover{background:#23364e}
+.auth-divider{color:#8298b1}.auth-divider:before,.auth-divider:after{background:#36495d}
+.auth-forgot,.auth-switch a,.auth-email-option>summary{color:#eab381}
+.auth-submit{background:#d99a62;color:#192231;border-radius:10px}
+.auth-submit:hover{background:#f0b785}
+.auth-secondary{background:#19293e;border-color:#43546a;color:#e4edf5}
+.auth-notice{background:#213d39;border-color:#3d7063;color:#b7e8d4}
+.auth-loading{background:#0e1829;color:#eab381}
+.account-card{background:#142238;border-color:#344960}
+.account-card h2{color:#f3f6fb}
+.account-card .auth-submit{color:#142131}
+@media(max-width:1050px){.tool-app{grid-template-columns:215px minmax(0,1fr)}}
+@media(max-width:760px){
+  .tool-app{grid-template-columns:1fr}
+  .tool-sidebar{background:#0a1322;border-bottom:1px solid #304257}
+  .tool-sidebar .brand{padding:6px 4px 10px}
+  .tool-sidebar .side-nav:first-of-type{padding-top:8px;scrollbar-width:thin}
+  .side-nav a{padding:11px}
+  .tool-toolbar{height:55px}
+  .tool-main .page{width:calc(100% - 28px)}
+  .tool-main .page-heading h1{font-size:28px}
+  .quick-scan{grid-template-columns:1fr}
+  .tool-main .stat{padding:15px}
+  .tool-main .stat strong{font-size:29px}
+  .auth-intro{padding:24px}
+  .auth-content{padding:30px 20px}
+}
+@media(prefers-reduced-motion:reduce){.side-nav a,.btn,.tool-toolbar .account-link{transition:none}}
