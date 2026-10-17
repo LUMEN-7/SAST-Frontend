@@ -1,74 +1,17 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  Link,
-  NavLink,
-  useNavigate,
-  useParams,
-  useLocation,
-} from "react-router-dom";
-import {
-  Activity,
-  ArrowDownToLine,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  BookOpen,
-  Check,
-  CheckCircle2,
-  ChevronDown,
-  Clock3,
-  CloudUpload,
-  Code2,
-  ExternalLink,
-  FileArchive,
-  FileCode2,
-  FolderGit2,
-  Github,
-  GitBranch,
-  LayoutDashboard,
-  LockKeyhole,
-  Menu,
-  Search,
-  Shield,
-  ShieldAlert,
-  ShieldCheck,
-  ShieldQuestion,
-  Terminal,
-  TriangleAlert,
-  UploadCloud,
-  X,
-} from "lucide-react";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  BarChart,
-  Bar,
-  Cell,
-} from "recharts";
-function Brand() {
+import { Link } from "react-router-dom";
+import { Shield } from "lucide-react";
+
+export default function Brand() {
   return (
-    <Link className="brand" to="/">
-      <span className="brand-mark">
-        <ShieldCheck size={22} />
+    <Link className="brand ares-brand" to="/" aria-label="Ares by Lumen Security — Visão geral">
+      <span className="brand-mark ares-brand-mark" aria-hidden="true">
+        <Shield size={23} strokeWidth={1.8} />
+        <span className="ares-mark-core">A</span>
       </span>
-      <span>
-        <b>
-          LUMEN<span className="brand-accent">.</span>SAST
-        </b>
-        <small>SECURITY INTELLIGENCE</small>
+      <span className="ares-brand-copy">
+        <b>ARES<span className="ares-brand-registered">.</span></b>
+        <small>BY LUMEN SECURITY</small>
       </span>
     </Link>
   );
 }
-export default Brand;
