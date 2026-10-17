@@ -498,3 +498,13 @@ No primeiro login de uma conta nova, /onboarding pergunta o nome de exibição e
 A identificação do primeiro login usa os horários de criação e de último acesso fornecidos pelo Firebase. A conclusão ou o pulo é registrado por UID no armazenamento deste navegador, com estado em memória para a sessão. Não existe um campo de onboarding no backend; esse registro não é sincronizado entre dispositivos e é removido pela limpeza de logout. Logins posteriores são distinguidos pelos metadados Firebase.
 
 A entrada em um grupo continua exclusivamente por inclusão pelo administrador usando o e-mail. A interface exibe o e-mail da conta e orienta a solicitar acesso; não há código de convite nem endpoint novo.
+
+## Seleção de repositórios monitorados
+
+A página Repositórios carrega somente `GET /api/v1/repos` ao abrir, sem acessar o GitHub nem consultar achados por repositório. A resposta pode ser uma lista ou `{ repos: [...] }`. Lista vazia mostra “Nenhum repositório conectado”. Métricas não fornecidas são exibidas como indisponíveis.
+
+Adicionar abre um diálogo e solicita `GET /api/v1/repos/available?page=1&per_page=20`. A resposta esperada contém `{ repos: [...], has_next: boolean }`; cada item traz `github_id`, `full_name`, `owner`, `html_url` e `connected`. Próxima só aparece com `has_next: true`; Anterior aparece após a primeira página. Não há prefetch. HTTP 401 substitui o conteúdo por Entrar com GitHub, apontando para `/api/v1/auth/github`.
+
+Conectar envia `POST /api/v1/repos` com exatamente `{ github_id, full_name, owner, html_url }` do item selecionado. Após sucesso, o diálogo fecha e a lista monitorada é consultada novamente. Itens já conectados ficam desabilitados.
+
+As três operações enviam `X-Sast-Token`: usam `lumen-sast-token` se houver sessão emitida pelo backend; caso contrário, usam o ID token Firebase da sessão atual. O header Authorization existente é preservado. O backend deve aceitar o token aplicável e permitir `X-Sast-Token` no CORS.
