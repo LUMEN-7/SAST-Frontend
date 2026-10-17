@@ -1,6 +1,6 @@
+import GitHubIcon from "../../components/ui/GitHubIcon";
 import { useEffect, useState } from "react";
 import {
-  Github,
   GitBranch,
   FolderGit2,
   Search,
@@ -126,7 +126,7 @@ export default function Repositories() {
             </div>
           ) : (
             <div className="repos-empty">
-              <Github size={25} />
+              <GitHubIcon size={25} />
               <b>Nenhum repositório encontrado</b>
               <p>
                 {query

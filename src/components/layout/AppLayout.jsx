@@ -1,3 +1,4 @@
+import GitHubIcon from "../ui/GitHubIcon";
 import React, {
   useCallback,
   useEffect,
@@ -29,7 +30,6 @@ import {
   FileArchive,
   FileCode2,
   FolderGit2,
-  Github,
   GitBranch,
   LayoutDashboard,
   Bell,
@@ -88,7 +88,7 @@ function Layout({ children, dashboard = false }) {
           </NavLink>
           <NavLink to="/local-analyses"><FileCode2 size={18} /> Scan local</NavLink>
           <NavLink to="/repositories">
-            <Github size={18} /> Repositórios
+            <GitHubIcon size={18} /> Repositórios
           </NavLink>
           <NavLink to="/analyses">
             <ClipboardList size={18} /> Análises
