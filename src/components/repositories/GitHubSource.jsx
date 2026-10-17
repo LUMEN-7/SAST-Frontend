@@ -18,9 +18,9 @@ export default function GitHubSource() {
   return (
     <div className="github-source">
       <a className="btn btn-primary" href={api.githubUrl()}>
-        <GitHubIcon size={16} /> Entrar com GitHub
+        <GitHubIcon size={16} /> Conectar repositório
       </a>
-      <p>Conecte a conta para listar os repositórios.</p>
+      <p>Autorize o acesso ao GitHub para listar os repositórios disponíveis.</p>
     </div>
   );
 }
