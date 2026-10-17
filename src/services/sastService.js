@@ -1,5 +1,7 @@
 import { api, readRecent } from "../api";
 
+export const isDemo = import.meta.env.VITE_DATA_MODE !== "api";
+
 
 function riskFromCounts(critical = 0, high = 0, medium = 0) {
   if (critical) return "critical";
@@ -30,6 +32,7 @@ function mapRepo(repo, findings = []) {
 
 export const sastService = {
   async getRepositories() {
+    if (isDemo) return [];
     const data = await api.repos().catch(error => {
       if (error.status === 404) return { repos: [] };
       throw error;
@@ -60,6 +63,7 @@ export const sastService = {
   },
 
   async getAlerts() {
+    if (isDemo) return [];
     const repos = await this.getRepositories();
     const alerts = [];
     for (const repo of repos) {
@@ -104,6 +108,7 @@ export const sastService = {
   },
 
   async getSummary(repositoryId) {
+    if (isDemo) return null;
     return api.summary(repositoryId).catch(error => {
       if (error.status === 404) return null;
       throw error;

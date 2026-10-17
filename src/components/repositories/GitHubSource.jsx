@@ -1,4 +1,4 @@
-import { Plug } from "lucide-react";
+import GitHubIcon from "../ui/GitHubIcon";
 import { useEffect, useState } from "react";
 
 import { api, readToken } from "../../api";
@@ -18,9 +18,9 @@ export default function GitHubSource() {
   return (
     <div className="github-source">
       <a className="btn btn-primary" href={api.githubUrl()}>
-        <Plug size={16} /> Escolher repositório
+        <GitHubIcon size={16} /> Entrar com GitHub
       </a>
-      <p>Autorize o acesso ao GitHub para listar os repositórios disponíveis.</p>
+      <p>Conecte a conta para listar os repositórios.</p>
     </div>
   );
 }

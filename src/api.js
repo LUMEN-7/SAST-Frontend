@@ -4,6 +4,13 @@ const BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 const TOKEN_KEY = "lumen-sast-token";
 
 export function readToken() {
+  const fromUrl = new URLSearchParams(window.location.search).get("sast_token");
+  if (fromUrl) {
+    localStorage.setItem(TOKEN_KEY, fromUrl);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("sast_token");
+    window.history.replaceState({}, "", url.pathname + url.search);
+  }
   return localStorage.getItem(TOKEN_KEY) || "";
 }
 
@@ -13,10 +20,11 @@ export function saveToken(token) {
 }
 
 function headers(extra = {}) {
-  const token = auth ? "" : readToken();
+  const token = readToken();
   return {
     "ngrok-skip-browser-warning": "true",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(!auth && token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(token ? { "X-Sast-Token": token } : {}),
     ...extra,
   };
 }
@@ -34,11 +42,6 @@ export async function request(path, options = {}) {
   return response;
 }
 
-async function optionalJson(response) {
-  const body = await response.text();
-  return body.trim() ? JSON.parse(body) : null;
-}
-
 export const api = {
   summary: (repositoryId, days = 30) => {
     const params = new URLSearchParams({ days: String(days) });
@@ -46,7 +49,6 @@ export const api = {
     return request(`/api/v1/dashboard/summary?${params}`).then((r) => r.json());
   },
   repos: () => request("/api/v1/repos").then((r) => r.json()),
-  groupSummary: (id) => request("/api/v1/dashboard/summary?" + new URLSearchParams({ group_id: String(id) })).then(r => r.json()),
   groups: () => request("/api/v1/groups").then((r) => r.json()),
   createGroup: (name) =>
     request("/api/v1/groups", {
@@ -55,13 +57,13 @@ export const api = {
       body: JSON.stringify({ name }),
     }).then((r) => r.json()),
   addGroupRepo: (groupId, repositoryId) =>
-    request(`/api/v1/groups/${encodeURIComponent(groupId)}/repos/${encodeURIComponent(repositoryId)}`, { method: "POST" }).then(optionalJson),
+    request(`/api/v1/groups/${groupId}/repos/${repositoryId}`, { method: "POST" }).then((r) => r.json()),
   addGroupMember: (groupId, email, role) =>
-    request(`/api/v1/groups/${encodeURIComponent(groupId)}/members`, {
+    request(`/api/v1/groups/${groupId}/members`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, role }),
-    }).then(optionalJson),
+    }).then((r) => r.json()),
   repoFindings: (id) =>
     request(`/api/v1/repos/${id}/findings`).then((r) => r.json()),
   submit: (file, repositoryId) => {
@@ -94,20 +96,20 @@ export const api = {
   githubUrl: () => `${BASE}/api/v1/auth/github`,
 };
 
+const RECENT_KEY = "lumen-sast-recent-v1";
+
 function recentKey() {
   const uid = auth?.currentUser?.uid;
-  return uid ? `lumen-sast-recent-v1-${uid}` : `lumen-sast-recent-v1-anon`;
+  return uid ? `${RECENT_KEY}-${uid}` : `${RECENT_KEY}-anon`;
 }
-
-const RECENT_KEY = recentKey();
 
 export function readRecent() {
   try {
-    const items = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+    const items = JSON.parse(localStorage.getItem(recentKey()) || "[]");
     if (!Array.isArray(items)) return [];
     // Discard entries left by the retired demonstration mode.
     const real = items.filter(item => typeof item?.id === "string" && !item.id.startsWith("demo-"));
-    if (real.length !== items.length) localStorage.setItem(RECENT_KEY, JSON.stringify(real));
+    if (real.length !== items.length) localStorage.setItem(recentKey(), JSON.stringify(real));
     return real;
   } catch {
     return [];
@@ -119,6 +121,6 @@ export function saveRecent(item) {
     { ...item, at: new Date().toISOString() },
     ...readRecent().filter((x) => x.id !== item.id),
   ].slice(0, 24);
-  localStorage.setItem(RECENT_KEY, JSON.stringify(items));
+  localStorage.setItem(recentKey(), JSON.stringify(items));
   return items;
 }

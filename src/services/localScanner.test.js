@@ -17,7 +17,7 @@ test("safe text has no findings; binary and oversized selections are rejected", 
   assert.deepEqual(scanText('const greeting = "hello";', "safe.js"), { findings: [], truncated: false });
   assert.throws(() => scanText("a\0b", "binary.txt"), /binário/);
   assert.throws(() => validateFiles([]), /Selecione/);
-  assert.throws(() => validateFiles([{ name: "code.zip", size: 10 }]), /não suportado/);
+  assert.throws(() => validateFiles([{ name: "code.exe", size: 10 }]), /não suportado/);
   assert.throws(() => validateFiles([{ name: "code.py", size: 3 * 1024 * 1024 }]), /excede/);
   assert.throws(() => validateFiles(Array(51).fill({ name: "code.js", size: 1 })), /50 arquivos/);
   validateFiles([{ name: ".env", size: 10 }, { name: "code.ts", size: 10 }]);

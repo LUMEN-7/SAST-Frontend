@@ -12,6 +12,10 @@ export default function ZipUpload({ repositoryId = "" }) {
   async function send(event) {
     event.preventDefault();
     if (!file) return;
+    if (file.size > 100 * 1024 * 1024) {
+      setError("O zip passa de 100 MB.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -35,7 +39,7 @@ export default function ZipUpload({ repositoryId = "" }) {
       <div className="panel-head">
         <div>
           <h2>Enviar zip</h2>
-          <p>Manda o código compactado para a API varrer.</p>
+          <p>Manda o código compactado para a API varrer. ZIP até 100 MB.</p>
         </div>
       </div>
       <label className="search-field">

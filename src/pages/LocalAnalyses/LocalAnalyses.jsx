@@ -3,6 +3,7 @@ import { FileCode2, LockKeyhole, Trash2, Download } from "lucide-react";
 import Layout from "../../components/layout/AppLayout";
 import Tag from "../../components/ui/SeverityTag";
 import { validateFiles } from "../../services/localScanner";
+import { api } from "../../api";
 import "./LocalAnalyses.css";
 export default function LocalAnalyses() {
   const [files, setFiles] = useState([]), [results, setResults] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState("");
@@ -13,16 +14,26 @@ export default function LocalAnalyses() {
     setFiles([]); setResults(null); setBusy(false); setError("");
     if (input.current) input.current.value = "";
   }
-  function analyze(event) {
+  async function analyze(event) {
     event.preventDefault(); setError(""); setResults(null);
     try {
       validateFiles(files); setBusy(true);
+      const zips = files.filter((file) => file.name.toLowerCase().endsWith(".zip"));
+      const sources = files.filter((file) => !file.name.toLowerCase().endsWith(".zip"));
+      for (const zip of zips) {
+        await api.submit(zip);
+      }
+      if (!sources.length) {
+        setBusy(false);
+        setError(zips.length ? "Zip enviado para a API. Acompanhe em Análises." : "");
+        return;
+      }
       worker.current?.terminate();
       const next = new Worker(new URL("./scanner.worker.js", import.meta.url), { type: "module" });
       worker.current = next;
       next.onmessage = ({ data }) => { setBusy(false); if (data.error) setError(data.error); else setResults(data.results); next.terminate(); worker.current = null; };
       next.onerror = () => { setBusy(false); setError("Não foi possível analisar estes arquivos no navegador."); next.terminate(); worker.current = null; };
-      next.postMessage(files);
+      next.postMessage(sources);
     } catch (err) { setBusy(false); setError(err.message); }
   }
   function download() {
@@ -33,7 +44,7 @@ export default function LocalAnalyses() {
   return <Layout><main className="container page local-page">
     <div className="page-heading"><div><span className="section-kicker">NO SEU NAVEGADOR</span><h1>Scan local</h1><p>Inspecione arquivos sem enviá-los para um servidor.</p></div><span className="local-badge"><LockKeyhole size={15} /> Processamento local</span></div>
     <section className="local-privacy"><LockKeyhole size={24} /><div><h2>Seu código fica com você</h2><p>Os arquivos, seus nomes e os resultados desta análise não são enviados à API, ao Firebase ou a terceiros. Não são incluídos no perfil, dashboard, alertas ou histórico da plataforma. Ficam apenas na memória desta página e são descartados ao sair dela ou recarregar. O relatório só é salvo se você escolher baixá-lo.</p><small>A autenticação do aplicativo continua usando Firebase; o conteúdo desta análise não é compartilhado com ele.</small></div></section>
-    <form className="panel local-form" onSubmit={analyze}><h2>Selecione seu código</h2><p>Arquivos de código ou texto, até 2 MB cada e 10 MB no total. Até 50 arquivos; ZIP não é suportado.</p><label className="local-file-picker"><FileCode2 size={24} /><span>Escolher arquivos para análise</span><input ref={input} aria-label="Escolher arquivos locais" type="file" multiple disabled={busy} onChange={event => { setFiles(Array.from(event.target.files || [])); setResults(null); setError(""); }} /></label>
+    <form className="panel local-form" onSubmit={analyze}><h2>Selecione seu código</h2><p>Arquivos de código, texto ou ZIP, até 100 MB no total. Até 50 arquivos.</p><label className="local-file-picker"><FileCode2 size={24} /><span>Escolher arquivos para análise</span><input ref={input} aria-label="Escolher arquivos locais" type="file" accept=".zip,application/zip,.js,.jsx,.ts,.tsx,.py,.java,.cs,.php,.go,.rb,.sql,.html,.json,.yml,.yaml,.env,.txt,.sh" multiple disabled={busy} onChange={event => { setFiles(Array.from(event.target.files || [])); setResults(null); setError(""); }} /></label>
     {!!files.length && <ul className="local-file-list">{files.map((file, i) => <li key={i}>{file.name} <small>{Math.ceil(file.size / 1024)} KB</small></li>)}</ul>}
     {error && <div role="alert" className="notice error">{error}</div>}<div className="local-actions"><button type="submit" className="btn btn-primary" disabled={!files.length || busy}>{busy ? "Analisando no navegador…" : "Analisar localmente"}</button><button type="button" className="btn btn-outline" onClick={clear} disabled={!files.length && !results}><Trash2 size={16} />{busy ? "Cancelar e limpar" : "Limpar arquivos e resultados"}</button></div></form>
     <p className="local-limits">Esta verificação procura padrões de risco, como execução dinâmica, chaves privadas e TLS desativado. Não executa seu código, não usa IA e não substitui uma análise SAST completa. Pode gerar falsos positivos e deixar vulnerabilidades passar.</p>

@@ -6,7 +6,7 @@ const RULES = [
   { id: "embedded-secret", severity: "high", title: "Possível segredo definido no código", pattern: /\b(?:password|passwd|api_key|apiKey|client_secret|access_token)\s*[:=]\s*["'][^"'\s]{8,}["']/i, advice: "Confirme se é uma credencial real. Mova segredos para um gerenciador e revogue valores expostos." },
   { id: "disabled-tls", severity: "high", title: "Verificação TLS desativada", pattern: /(?:verify\s*=\s*False|rejectUnauthorized\s*:\s*false|NODE_TLS_REJECT_UNAUTHORIZED\s*=\s*["']?0)/, advice: "Ative a validação dos certificados TLS." },
 ];
-export const SUPPORTED = /\.(?:js|jsx|ts|tsx|mjs|cjs|py|php|java|go|rb|cs|sql|html|htm|json|ya?ml|toml|ini|env|txt|sh)$/i;
+export const SUPPORTED = /\.(?:js|jsx|ts|tsx|mjs|cjs|py|php|java|go|rb|cs|sql|html|htm|json|ya?ml|toml|ini|env|txt|sh|zip)$/i;
 export function scanText(text, name) {
   if (text.includes("\0")) throw new Error("Arquivo binário não suportado.");
   const findings = [];
@@ -19,11 +19,11 @@ export function scanText(text, name) {
   return { findings, truncated: false };
 }
 export function validateFiles(files) {
-  if (!files.length) throw new Error("Selecione ao menos um arquivo de código ou texto.");
+  if (!files.length) throw new Error("Selecione ao menos um arquivo de código, texto ou ZIP.");
   if (files.length > 50) throw new Error("Selecione no máximo 50 arquivos por análise.");
-  if (files.reduce((total, file) => total + file.size, 0) > 10 * 1024 * 1024) throw new Error("O total deve ser de até 10 MB.");
+  if (files.reduce((total, file) => total + file.size, 0) > 100 * 1024 * 1024) throw new Error("O total deve ser de até 100 MB.");
   for (const file of files) {
-    if (!SUPPORTED.test(file.name) && file.name !== ".env") throw new Error(`Formato não suportado: ${file.name}. Selecione arquivos de código ou texto, sem ZIP.`);
-    if (file.size > 2 * 1024 * 1024) throw new Error(`O arquivo ${file.name} excede 2 MB.`);
+    if (!SUPPORTED.test(file.name) && file.name !== ".env") throw new Error(`Formato não suportado: ${file.name}.`);
+    if (file.size > 100 * 1024 * 1024) throw new Error(`O arquivo ${file.name} excede 100 MB.`);
   }
 }
