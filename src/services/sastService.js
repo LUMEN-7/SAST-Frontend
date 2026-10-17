@@ -38,12 +38,7 @@ export const sastService = {
       throw error;
     });
     const repos = data.repos || [];
-    const withFindings = await Promise.all(
-      repos.map(async (repo) =>
-        mapRepo(repo, await api.repoFindings(repo.id)),
-      ),
-    );
-    return withFindings;
+    return repos.map((repo) => mapRepo(repo, Array.from({ length: repo.findings || 0 })));
   },
 
   async getAnalyses() {
@@ -64,30 +59,21 @@ export const sastService = {
 
   async getAlerts() {
     if (isDemo) return [];
-    const repos = await this.getRepositories();
-    const alerts = [];
-    for (const repo of repos) {
-      const findings = await api.repoFindings(repo.id);
-      findings
-        .filter(
-          (item) => item.severity === "critical" || item.severity === "high",
-        )
-        .forEach((item) => {
-          alerts.push({
-            id: item.id || `${repo.id}-${item.file_path}-${item.line}`,
-            repository_id: repo.id,
-            repository: repo.name,
-            severity: item.severity,
-            title: item.rule_id || "Achado",
-            description: item.message || "",
-            file: item.file_path,
-            created_at: item.created_at || null,
-            read: false,
-            resultado: item.resultado,
-          });
-        });
-    }
-    return alerts;
+    const rows = await api.findings();
+    return (Array.isArray(rows) ? rows : [])
+      .filter((item) => item.severity === "critical" || item.severity === "high")
+      .map((item) => ({
+        id: item.id,
+        repository_id: item.repository_id,
+        repository: item.repository,
+        severity: item.severity,
+        title: item.rule_id || "Achado",
+        description: item.message || "",
+        file: item.file_path,
+        created_at: item.created_at || null,
+        read: false,
+        resultado: item.resultado,
+      }));
   },
 
   async getRepositoryOverview(id) {

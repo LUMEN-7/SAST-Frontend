@@ -54,6 +54,7 @@ export const api = {
     return request(`/api/v1/dashboard/summary?${params}`).then((r) => r.json());
   },
   repos: () => request("/api/v1/repos").then((r) => r.json()),
+  findings: () => request("/api/v1/findings").then((r) => r.json()),
   groupSummary: (id) => request("/api/v1/dashboard/summary?" + new URLSearchParams({ group_id: String(id) })).then(r => r.json()),
   groups: () => request("/api/v1/groups").then((r) => r.json()),
   createGroup: (name) =>
