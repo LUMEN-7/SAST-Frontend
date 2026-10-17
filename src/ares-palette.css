@@ -1,0 +1,68 @@
+/* Ares — authoritative color tokens. Imported last to override legacy themes. */
+:root {
+  /* Base */
+  --bg: #0E1013;
+  --surface: #15181C;
+  --surface-elevated: #1C2026;
+  --border: #2A2F36;
+
+  /* Text */
+  --text: #ECEDEF;
+  --text-muted: #9AA1AB;
+
+  /* Bronze */
+  --accent: #D4924A;
+  --accent-hover: #E0A25C;
+  --accent-pressed: #B87A38;
+  --accent-subtle: rgba(212, 146, 74, 0.12);
+  --on-accent: #17110A;
+
+  /* Risk severity */
+  --sev-critical: #E5484D;
+  --sev-high: #F0734A;
+  --sev-medium: #E2C14B;
+  --sev-low: #6E8BB5;
+
+  /* Compatibility for existing CSS */
+  --ares-bg:var(--bg);--ares-sidebar:var(--surface);--ares-surface:var(--surface);
+  --ares-raised:var(--surface-elevated);--ares-line:var(--border);
+  --ares-text:var(--text);--ares-muted:var(--text-muted);--ares-accent:var(--accent);
+  --ar-bg:var(--bg);--ar-panel:var(--surface);--ar-line:var(--border);
+  --ar-text:var(--text);--ar-muted:var(--text-muted);--ar-accent:var(--accent);
+  --ink:var(--text);--muted:var(--text-muted);--line:var(--border);
+  color-scheme:dark;
+}
+body,.app,.tool-app,.auth-page,.auth-content,.auth-loading{background:var(--bg)!important;color:var(--text)!important}
+.tool-sidebar,.auth-intro{background:var(--surface)!important;border-color:var(--border)!important}
+.tool-toolbar,.tool-main .panel,.tool-main .stat,.tool-main .scan-meta,.quick-scan,.source-panel,.tool-main .github-banner,.account-card,.profile-hero,.profile-grid>section,.ares-triage,.ares-detail,.ares-rules .panel{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text)!important}
+.tool-main .panel h2,.tool-main .stat strong,.tool-main .page-heading h1,.ares-detail h3,.ares-triage-head h2,.quick-scan h2,.auth-card h2{color:var(--text)!important}
+.panel-head p,.page-heading p,.tool-main .stat-top,.tool-main .stat small,.ares-detail-info p,.ares-triage-head span,.ares-distribution,.ares-muted{color:var(--text-muted)!important}
+.tool-breadcrumb,.tool-breadcrumb b{color:var(--text-muted)!important}
+.side-nav a.active{background:var(--accent-subtle)!important;border-color:var(--border)!important;box-shadow:inset 2px 0 var(--accent)!important;color:var(--text)!important}
+.side-nav a.active svg,.ares-wordmark .ares-brand-registered{color:var(--accent)!important}
+.tool-toolbar .account-link,.btn-outline,.btn-subtle,.source-field,.job-lookup input,.search-field,.repository-search,.auth-card input,.auth-providers button,.ares-toolbar input,.ares-toolbar select,.ares-status-control select,.ares-bulk select,.ares-rules-tools select,.ares-rule-search{background:var(--surface-elevated)!important;border-color:var(--border)!important;color:var(--text)!important}
+.btn-primary,.toolbar-action,.auth-submit{background:var(--accent)!important;color:var(--on-accent)!important;border-color:var(--accent)!important}
+.btn-primary:hover,.toolbar-action:hover,.auth-submit:hover{background:var(--accent-hover)!important;border-color:var(--accent-hover)!important}
+.btn-primary:active,.toolbar-action:active,.auth-submit:active{background:var(--accent-pressed)!important;border-color:var(--accent-pressed)!important}
+:focus-visible{outline:2px solid var(--accent)!important;outline-offset:2px}
+.ares-search:focus-within,.source-field:focus-within{border-color:var(--accent)!important}
+.ares-severity-bar{background:var(--border)!important}
+.ares-triage .sev-critical,.ares-rule-sev.is-critical{--sv:var(--sev-critical);border-color:var(--sev-critical)!important}
+.ares-triage .sev-high,.ares-rule-sev.is-high{--sv:var(--sev-high);border-color:var(--sev-high)!important}
+.ares-triage .sev-medium,.ares-rule-sev.is-medium{--sv:var(--sev-medium);border-color:var(--sev-medium)!important}
+.ares-triage .sev-low{--sv:var(--sev-low);border-color:var(--sev-low)!important}
+.ares-triage .ares-segment.sev-critical,.ares-triage .ares-severity-point.sev-critical{background:var(--sev-critical)!important}
+.ares-triage .ares-segment.sev-high,.ares-triage .ares-severity-point.sev-high{background:var(--sev-high)!important}
+.ares-triage .ares-segment.sev-medium,.ares-triage .ares-severity-point.sev-medium{background:var(--sev-medium)!important}
+.ares-triage .ares-segment.sev-low,.ares-triage .ares-severity-point.sev-low{background:var(--sev-low)!important}
+.repo-risk.risk-critical{border-color:var(--sev-critical)!important}
+.repo-risk.risk-high{border-color:var(--sev-high)!important}
+.repo-risk.risk-medium{border-color:var(--sev-medium)!important}
+.repo-risk.risk-low{border-color:var(--sev-low)!important}
+.ares-table th,.ares-rule-heading{background:var(--surface-elevated)!important;border-color:var(--border)!important}
+.ares-table td,.ares-rule-row,.ares-code,.ares-detail-head,.ares-shortcuts{border-color:var(--border)!important}
+.ares-table tbody tr.is-focused{background:var(--accent-subtle)!important;box-shadow:inset 2px 0 var(--accent)!important}
+.ares-code-row.is-vulnerable{background:var(--accent-subtle)!important;box-shadow:inset 2px 0 var(--accent)!important}
+.ares-triage .ares-rule-link:hover{color:var(--accent-hover)}
+.ares-table input[type="checkbox"],.ares-rule-toggle input{accent-color:var(--accent)!important}
+.ares-skeleton{background:var(--surface-elevated)!important}
