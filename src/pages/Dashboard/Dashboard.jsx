@@ -178,46 +178,46 @@ function Dashboard() {
                       <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
                         <stop
                           offset="0%"
-                          stopColor="#76e0c3"
+                          stopColor="#d99a62"
                           stopOpacity=".28"
                         />
                         <stop
                           offset="95%"
-                          stopColor="#76e0c3"
+                          stopColor="#d99a62"
                           stopOpacity="0"
                         />
                       </linearGradient>
                     </defs>
                     <CartesianGrid
                       vertical={false}
-                      stroke="#253344"
+                      stroke="#31445c"
                       strokeDasharray="4 5"
                     />
                     <XAxis
                       dataKey="date"
-                      tick={{ fill: "#8291a7", fontSize: 11 }}
+                      tick={{ fill: "#9bb0c6", fontSize: 11 }}
                       axisLine={false}
                       tickLine={false}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fill: "#8291a7", fontSize: 11 }}
+                      tick={{ fill: "#9bb0c6", fontSize: 11 }}
                       axisLine={false}
                       tickLine={false}
                     />
                     <Tooltip
                       contentStyle={{
-                        background: "#152233",
-                        border: "1px solid #34445b",
+                        background: "#15243a",
+                        border: "1px solid #40536d",
                         borderRadius: 12,
-                        color: "#e6f2f2",
+                        color: "#f2f5fb",
                       }}
                     />
                     <Area
                       dataKey="findings"
                       name="Vulnerabilidades"
                       type="monotone"
-                      stroke="#76e0c3"
+                      stroke="#d99a62"
                       strokeWidth={3}
                       fill="url(#area)"
                     />
