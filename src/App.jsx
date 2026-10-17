@@ -11,6 +11,7 @@ import Analyses from "./pages/Analyses/Analyses";
 import Alerts from "./pages/Alerts/Alerts";
 import LocalAnalyses from "./pages/LocalAnalyses/LocalAnalyses";
 import Rules from "./pages/Rules/Rules";
+import Groups from "./pages/Groups/Groups";
 
 function Protected() {
   const { user, loading } = useAuth();
@@ -34,6 +35,7 @@ export default function App() {
       <Route path="/analyses" element={<Analyses />} />
       <Route path="/alerts" element={<Alerts />} />
       <Route path="/rules" element={<Rules />} />
+      <Route path="/groups" element={<Groups />} />
       <Route path="/analysis/:id" element={<Analysis />} />
       </Route>
       <Route path="*" element={<NotFound />} />

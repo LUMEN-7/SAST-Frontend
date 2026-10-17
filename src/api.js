@@ -41,6 +41,21 @@ export const api = {
     return request(`/api/v1/dashboard/summary?${params}`).then((r) => r.json());
   },
   repos: () => request("/api/v1/repos").then((r) => r.json()),
+  groups: () => request("/api/v1/groups").then((r) => r.json()),
+  createGroup: (name) =>
+    request("/api/v1/groups", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    }).then((r) => r.json()),
+  addGroupRepo: (groupId, repositoryId) =>
+    request(`/api/v1/groups/${groupId}/repos/${repositoryId}`, { method: "POST" }).then((r) => r.json()),
+  addGroupMember: (groupId, email, role) =>
+    request(`/api/v1/groups/${groupId}/members`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, role }),
+    }).then((r) => r.json()),
   repoFindings: (id) =>
     request(`/api/v1/repos/${id}/findings`).then((r) => r.json()),
   submit: (file, repositoryId) => {
@@ -73,7 +88,12 @@ export const api = {
   githubUrl: () => `${BASE}/api/v1/auth/github`,
 };
 
-const RECENT_KEY = "lumen-sast-recent-v1";
+function recentKey() {
+  const uid = auth?.currentUser?.uid;
+  return uid ? `lumen-sast-recent-v1-${uid}` : `lumen-sast-recent-v1-anon`;
+}
+
+const RECENT_KEY = recentKey();
 
 export function readRecent() {
   try {
