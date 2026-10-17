@@ -172,3 +172,31 @@ button,a,input,select,summary{-webkit-tap-highlight-color:transparent}
  .design-state{padding:16px}
  .metric-dialog-header p,.metric-project-name small{color:var(--text-muted)}
 }
+
+.sidebar-groups-section{margin-top:24px;padding-top:8px;border-top:1px solid var(--border)}
+@media(max-width:900px){
+ .tool-sidebar .sidebar-groups-section{display:none}
+ .tool-sidebar.is-mobile-open .sidebar-groups-section{display:block;margin-top:16px;padding-top:16px}
+ .tool-sidebar.is-mobile-open .sidebar-groups-section .sidebar-caption{display:block!important;padding:0 12px 12px}
+ .tool-sidebar.is-mobile-open .sidebar-groups-section .groups-nav{display:grid!important;grid-template-columns:minmax(0,1fr);padding-top:0}
+}
+
+/* Explicit navigation visibility: avoid inherited first/nth-of-type rules. */
+.sidebar-navigation{min-height:0;overflow-y:auto;flex:1;padding:4px;margin:0 -4px}
+.tool-sidebar .sidebar-groups-section{display:block;flex-shrink:0}
+.tool-sidebar #groups-nav{display:grid;gap:6px;overflow:visible;padding-top:0}
+.tool-sidebar .sidebar-bottom{flex-shrink:0;margin-top:16px}
+@media(min-width:901px){
+ .tool-sidebar{overflow:hidden}
+ .tool-sidebar .sidebar-navigation{display:block}
+ .tool-sidebar .sidebar-groups-section>.sidebar-caption{display:block}
+}
+@media(max-width:900px){
+ .tool-sidebar .sidebar-navigation{display:none;overflow:visible;margin:0;padding:0}
+ .tool-sidebar.is-mobile-open .sidebar-navigation{display:block}
+ .tool-sidebar.is-mobile-open #workspace-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;padding-top:16px}
+ .tool-sidebar.is-mobile-open #groups-nav{display:grid;grid-template-columns:minmax(0,1fr)}
+ .tool-sidebar.is-mobile-open .sidebar-groups-section{display:block}
+ .tool-sidebar.is-mobile-open .sidebar-groups-section>.sidebar-caption{display:block!important}
+}
+@media(max-width:360px){.tool-sidebar.is-mobile-open #workspace-nav{grid-template-columns:minmax(0,1fr)}}

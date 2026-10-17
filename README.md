@@ -199,6 +199,8 @@ O backend deve validar o token e autorizar cada recurso pelo UID. A proteção d
 | /analysis/:id | Autenticado | Status, resultados, security gate e relatório |
 | /alerts | Autenticado | Achados altos e críticos dos repositórios |
 | /rules | Autenticado | Catálogo de referência e preferências locais |
+| /onboarding | Autenticado | Nome de exibição e configuração opcional de grupo no primeiro acesso |
+| /groups | Autenticado | Grupos, repositórios, membros e painel do gerente; seção Equipe |
 | /account | Autenticado | Perfil e métodos de acesso |
 | /login | Público | Entrada |
 | /register | Público | Cadastro |
@@ -396,10 +398,10 @@ O projeto ainda importa folhas de estilo anteriores a ares-palette.css, finish.c
 Os testes usam o runner nativo do Node:
 
 ~~~bash
-node --test src/services/*.test.js src/auth/*.test.js src/pages/Auth/*.test.js
+node --test src/api.test.js src/services/*.test.js src/auth/*.test.js src/pages/Auth/*.test.js
 ~~~
 
-A suíte atual tem 26 testes e cobre tratamento de erros da API, uso de dados reais, estados vazios, scanner local, limpeza de sessão e vinculação de provedores.
+A suíte atual tem 32 testes e cobre tratamento de erros da API, uso de dados reais, estados vazios, scanner local, limpeza de sessão e vinculação de provedores.
 
 Não há script de lint nem suíte de navegador configurados em package.json. Build e testes de unidade não substituem a verificação visual.
 
@@ -474,3 +476,25 @@ Autorize o domínio publicado no Firebase e confirme as URLs de callback dos pro
 - A revisão visual /design é pública e permanece no build de produção.
 - Há camadas de CSS legadas; a consolidação dos estilos ainda está pendente.
 - A suíte automatizada não cobre layout ou interação em navegador.
+
+## Administração de grupos
+
+Acesse /groups pela seção Equipe, separada de Workspace na navegação. A página exige uma sessão autenticada.
+
+- GET /api/v1/groups lista os grupos com id, name e role.
+- POST /api/v1/groups recebe { "name": "LUMEN" }; o criador é administrador.
+- POST /api/v1/groups/:id/repos/:repository_id associa um repositório obtido de GET /api/v1/repos.
+- POST /api/v1/groups/:id/members recebe email e role (member ou admin). A pessoa precisa ter acessado o aplicativo anteriormente.
+- GET /api/v1/dashboard/summary?group_id=:id fornece o painel do gerente.
+
+As chamadas usam o cliente HTTP compartilhado e enviam Authorization: Bearer com o token Firebase. Somente grupos com role admin exibem os formulários administrativos e solicitam o resumo. Respostas 403 são apresentadas como falta de permissão; a autorização efetiva pertence ao backend.
+
+O contrato fornecido não inclui listagem de membros ou de repositórios já associados. A tela confirma as inclusões, sem inventar essas listagens. As métricas exibidas usam total_jobs, total_findings e severity_distribution, os mesmos campos do resumo existente.
+
+### Primeiro acesso e entrada em grupos
+
+No primeiro login de uma conta nova, /onboarding pergunta o nome de exibição e oferece criar um grupo, consultar os grupos da conta ou pular a etapa. O nome é salvo no perfil Firebase; a criação usa POST /api/v1/groups.
+
+A identificação do primeiro login usa os horários de criação e de último acesso fornecidos pelo Firebase. A conclusão ou o pulo é registrado por UID no armazenamento deste navegador, com estado em memória para a sessão. Não existe um campo de onboarding no backend; esse registro não é sincronizado entre dispositivos e é removido pela limpeza de logout. Logins posteriores são distinguidos pelos metadados Firebase.
+
+A entrada em um grupo continua exclusivamente por inclusão pelo administrador usando o e-mail. A interface exibe o e-mail da conta e orienta a solicitar acesso; não há código de convite nem endpoint novo.
