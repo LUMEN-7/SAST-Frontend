@@ -7,6 +7,7 @@ import "./redesign.css";
 import "./tool-shell.css";
 import "./ares-theme.css";
 import "./ares-compact.css";
+import "./ares-palette.css";
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
