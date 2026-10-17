@@ -1,0 +1,91 @@
+/* Ares / system tokens. Product UI, not marketing. */
+:root{
+ --ares-bg:#111214;--ares-sidebar:#17191c;--ares-surface:#181a1d;--ares-raised:#202226;
+ --ares-line:#34373b;--ares-text:#e6e7e9;--ares-muted:#a0a3a9;--ares-accent:#bc7562;
+ --ink:var(--ares-text);--muted:var(--ares-muted);--line:var(--ares-line);
+ color-scheme:dark;
+}
+body,.app,.tool-app{background:var(--ares-bg)!important;color:var(--ares-text)!important}
+.tool-app{background:var(--ares-bg)!important;grid-template-columns:222px minmax(0,1fr)}
+.tool-sidebar{background:var(--ares-sidebar)!important;border-right:1px solid var(--ares-line)!important;padding:22px 12px}
+.tool-sidebar .ares-wordmark{padding:8px 12px 27px;display:flex;align-items:center}
+.ares-wordmark b,.tool-sidebar .ares-wordmark b{font:700 30px/1 'Outfit','Inter',sans-serif;letter-spacing:-1.2px;color:var(--ares-text)!important}
+.ares-wordmark small,.tool-sidebar .ares-wordmark small{display:block;font:600 9px 'DM Mono',monospace;letter-spacing:1.5px;color:#92969d!important;margin-top:5px}
+.ares-wordmark .ares-brand-registered{color:var(--ares-accent)}
+.sidebar-caption{color:#838790!important;padding:17px 14px 9px}
+.side-nav a{border-radius:4px!important;color:#b4b7bd!important;font-weight:600!important;padding:10px 12px!important}
+.side-nav a svg{color:#888d96!important}
+.side-nav a.active{background:#292629!important;border:1px solid #634842!important;box-shadow:inset 2px 0 var(--ares-accent)!important;color:#f0eded!important}
+.side-nav a.active svg{color:#d0aaa0!important}
+.side-nav a:hover{background:#24262a!important;color:#f0f1f2!important}
+.sidebar-bottom{border-top-color:var(--ares-line)!important}
+.tool-toolbar{background:#181a1d!important;border-color:var(--ares-line)!important;height:58px}
+.tool-breadcrumb,.tool-breadcrumb b{color:#b6b8bd!important}
+.tool-toolbar .account-link{border:1px solid #42454a!important;background:#24262a!important;color:#e4e5e7!important;border-radius:4px!important}
+.tool-main .page{width:min(1390px,calc(100% - 48px));padding:25px 0 58px}
+.tool-main .page-heading h1,.page-heading h1{font:700 25px 'Inter','Manrope',sans-serif!important;letter-spacing:-.5px!important;color:var(--ares-text)!important}
+.tool-main .page-heading p,.page-heading p{color:var(--ares-muted)!important}
+.tool-main .section-kicker{color:#a3a6ac!important;letter-spacing:.8px!important}
+.tool-main .stat,.tool-main .panel,.tool-main .scan-meta,.stat,.panel,.scan-meta,
+.quick-scan,.source-panel,.tool-main .github-banner{
+ background:var(--ares-surface)!important;border:1px solid var(--ares-line)!important;border-radius:5px!important;box-shadow:none!important;color:var(--ares-text)!important
+}
+.tool-main .stat:before{display:none!important}
+.tool-main .stat-top,.tool-main .stat small,.panel-head p{color:var(--ares-muted)!important}
+.tool-main .stat strong,.tool-main .panel h2,.quick-scan h2,.source-header b,.tool-main .scan-meta b{color:var(--ares-text)!important}
+.tool-main .stat-top svg{color:#92969e!important}
+.tool-main .panel{padding:17px}
+.tool-main .stat{padding:15px 17px}
+.btn,.btn-primary,.btn-outline,.btn-subtle,.toolbar-action{border-radius:5px!important;box-shadow:none!important}
+.btn-primary,.toolbar-action{background:var(--ares-accent)!important;color:#161415!important}
+.btn-primary:hover,.toolbar-action:hover{background:#d08b78!important}
+.btn-outline,.btn-subtle{background:#25272b!important;border:1px solid #41444a!important;color:var(--ares-text)!important}
+.btn-outline:hover,.btn-subtle:hover{background:#303338!important}
+.source-panel,.source-field,.job-lookup input,.search-field,.filter-pills button,.finding,.finding-body{border-radius:5px!important}
+.source-field,.job-lookup input,.search-field{background:#222428!important;border-color:#42454a!important}
+.source-field input,.job-lookup input,.search-field input{color:var(--ares-text)!important}
+.source-help{color:var(--ares-muted)!important}
+table{color:var(--ares-text)}
+th{background:#222428!important;color:#a9abb0!important;border-color:var(--ares-line)!important}
+td{color:#d2d4d7!important;border-color:#33363a!important}
+.file-link,.repo-name-link{color:#e0e2e4!important}
+.neutral-pill{border:1px solid var(--ares-line)!important;background:#24262a!important;color:#bcc0c5!important;border-radius:4px!important}
+.bar-track{background:#323438!important}
+.gate-panel select,.filter-pills button,.repository-search{background:#24262a!important;color:#e1e3e5!important;border:1px solid #42454a!important;border-radius:4px!important}
+.filter-pills button.selected{background:#503630!important;border-color:var(--ares-accent)!important;color:#f0d4ce!important}
+.finding{background:var(--ares-surface)!important;border-color:var(--ares-line)!important}
+.finding-title,.finding-name b,.gate-content b{color:#e4e6e8!important}
+.finding-body{background:#1d1f22!important;color:#c3c6ca!important}
+.finding-body h4{color:#e5e5e7!important}
+.code-block{background:#101113!important;color:#d2d7da!important;border-color:#404246!important}
+.processing{background:#242526!important;border:1px solid #555054!important;color:#e4e4e6!important;border-radius:5px!important}
+.processing p{color:#acb0b4!important}.spinner{border-color:#54565a;border-top-color:var(--ares-accent)}
+.upload{background:#1b1e21!important;border:1px dashed #55575c!important;border-radius:5px!important;box-shadow:none!important}
+.upload b{color:#e5e7e9!important}.upload p,.upload small{color:#a7aaaf!important}
+.auth-page{background:var(--ares-bg)!important;color:var(--ares-text)!important}
+.auth-intro{background:#191b1e!important;border-right:1px solid var(--ares-line)!important}
+.auth-intro h1{font-size:clamp(30px,3vw,43px)!important;letter-spacing:-.8px!important;color:var(--ares-text)!important}
+.auth-intro p,.auth-feature{color:#aaadb3!important}
+.auth-intro .auth-eyebrow{color:var(--ares-accent)!important}.auth-feature{border-top-color:var(--ares-line)!important}
+.auth-content{background:var(--ares-bg)!important}
+.auth-card h2,.auth-linking h3{color:var(--ares-text)!important}.auth-card p,.auth-card label{color:#b2b5ba!important}
+.auth-card input,.auth-providers button{background:#202226!important;border:1px solid #484a4f!important;color:#e6e7e9!important;border-radius:5px!important}
+.auth-submit{background:var(--ares-accent)!important;border-radius:5px!important;color:#19191b!important}
+.auth-secondary{background:#24262a!important;color:var(--ares-text)!important}
+.auth-forgot,.auth-switch a,.auth-email-option>summary{color:#d49a88!important}
+.auth-notice{background:#25322c!important;border-color:#456354!important;color:#bbd0bd!important}
+.auth-loading{background:var(--ares-bg)!important;color:var(--ares-text)!important}
+.account-card,.profile-hero,.profile-grid>section{background:var(--ares-surface)!important;color:var(--ares-text)!important;border-color:var(--ares-line)!important;border-radius:5px!important;box-shadow:none!important}
+.repository-search input,.repo-name-link,.repo-info small,.repo-count b,.repo-count small{color:var(--ares-text)!important}
+.repo-item{border-color:var(--ares-line)!important}
+.repo-item:hover{background:#222428!important}
+.repo-symbol{background:#282a2e!important;color:#a5a7ac!important;border-radius:4px!important}
+.repo-risk{background:transparent!important;border-left:2px solid #a9a6a1!important;border-radius:0!important;padding:2px 6px!important;color:#d1c4b7!important}
+.repo-risk.risk-critical{border-color:#c46a71!important}.repo-risk.risk-high{border-color:#be906c!important}.repo-risk.risk-medium{border-color:#b8a06b!important}.repo-risk.risk-low{border-color:#6c9a9c!important}
+.repo-open{border-color:var(--ares-line)!important;border-radius:4px!important;color:#babdc2!important}
+.repos-empty,.repos-empty b{color:#b6b8bd!important}
+.ares-skeleton{height:12px;border-radius:3px;background:#2f3135;animation:ares-pulse 1.5s ease-in-out infinite alternate}
+@keyframes ares-pulse{to{opacity:.45}}
+@media(max-width:760px){.tool-app{grid-template-columns:1fr}.tool-sidebar{border-bottom:1px solid var(--ares-line)!important}.tool-main .page{width:calc(100% - 28px)}}
+@media(prefers-reduced-motion:reduce){.ares-skeleton{animation:none}}
+@media(prefers-color-scheme:light){:root:not([data-ares-theme="dark"]){--ares-bg:#f7f7f7;--ares-sidebar:#f0f0f1;--ares-surface:#fff;--ares-raised:#eee;--ares-line:#d5d6d8;--ares-text:#24262a;--ares-muted:#5f6369}}
