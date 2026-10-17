@@ -61,7 +61,7 @@ import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Status from "../../components/ui/AnalysisStatus";
 import Empty from "../../components/ui/EmptyState";
-import Finding from "../../components/analysis/FindingCard";
+import ScanFindingsTable from "../../components/analysis/ScanFindingsTable";
 import "./Analysis.css";
 function Analysis() {
   const { id } = useParams(),
@@ -177,7 +177,7 @@ function Analysis() {
             </span>
             <h1>
               {recent?.repo_name || recent?.name || "Análise " + id.slice(0, 8)}
-              <span className="heading-dot">.</span>
+
             </h1>
             <p>
               Identificador <code className="mono">{id}</code>
@@ -283,59 +283,7 @@ function Analysis() {
             </div>
           </div>
         </section>
-        <section className="panel">
-          <div className="panel-head">
-            <div>
-              <h2>Vulnerabilidades encontradas</h2>
-              <p>
-                Classificadas da maior para a menor severidade, com
-                recomendações para correção.
-              </p>
-            </div>
-            <span className="neutral-pill">{findings.length} resultado(s)</span>
-          </div>
-          <div className="finding-tools">
-            <label className="search-field">
-              <Search size={17} />
-              <input
-                placeholder="Buscar por arquivo, regra ou descrição…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </label>
-            <div className="filter-pills">
-              {["all", "critical", "high", "medium", "low", "info"].map((k) => (
-                <button
-                  key={k}
-                  className={filter === k ? "selected" : ""}
-                  onClick={() => setFilter(k)}
-                >
-                  {k === "all" ? "Todos" : severity(k).label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="findings">
-            {findings.length ? (
-              findings.map((finding, index) => (
-                <Finding finding={finding} index={index} key={index} />
-              ))
-            ) : (
-              <Empty
-                icon={ShieldCheck}
-                title={
-                  result?.status === "completed" && !result.findings?.length
-                    ? "Nenhuma vulnerabilidade encontrada"
-                    : "Nenhum resultado para exibir"
-                }
-              >
-                {result?.status === "completed"
-                  ? "Tente alterar os filtros ou verifique o relatório da análise."
-                  : "Os achados aparecerão depois do processamento."}
-              </Empty>
-            )}
-          </div>
-        </section>
+        <ScanFindingsTable findings={result?.findings || []} analysisId={id} queryFile={queryFile || ""} busy={!result && !error && status?.status !== "failed"} />
         <div className="analysis-bottom">
           <Link className="btn btn-primary" to="/">
             Voltar ao painel <ArrowRight size={16} />
