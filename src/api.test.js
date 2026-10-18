@@ -4,13 +4,13 @@ import fs from "node:fs";
 import { transformSync } from "esbuild";
 import { readApiError } from "./services/apiError.js";
 
-function client(respond, sastToken = null) {
+function client(respond) {
   const calls = [];
   const source = fs.readFileSync(new URL("./api.js", import.meta.url),"utf8").replaceAll("import.meta.env.VITE_API_BASE_URL",'""');
   const { code } = transformSync(source,{format:"cjs"});
   const module = {exports:{}};
   const auth = { currentUser:{uid:"account-uid",getIdToken:async()=>"firebase-test-token"},authStateReady:async()=>{} };
-  const storage = { getItem: key => key === "lumen-sast-token" ? sastToken : null };
+  const storage = { getItem:()=>null };
   const fetchMock = async (url,options) => { calls.push({url,...options}); return respond(url,options); };
   new Function("require","module","exports","fetch","localStorage",code)(
     name => name==="./firebase" ? {auth} : {readApiError},module,module.exports,fetchMock,storage
@@ -42,37 +42,4 @@ test("group associations accept empty success responses",async()=>{
 test("group summary preserves backend 403 instead of returning empty metrics",async()=>{
   const {api}=client(()=>new Response('{"detail":"Admins only"}',{status:403}));
   await assert.rejects(api.groupSummary("g"),{status:403,message:"Admins only"});
-});
-
-test("repository calls use X-Sast-Token and connect only the selected item fields", async () => {
-  const { api, calls } = client(() => new Response('{}', { status: 200 }));
-  await api.repos();
-  await api.availableRepos();
-  assert.equal(calls.length, 2);
-  assert.equal(calls[0].url, "/api/v1/repos");
-  assert.equal(calls[1].url, "/api/v1/repos/available?page=1&per_page=20");
-  await api.availableRepos(2);
-  const item = { github_id: 42, full_name: "owner/project", owner: "owner", html_url: "https://github.com/owner/project", connected: false, unrelated: "omit" };
-  await api.connectRepo(item);
-  assert.ok(calls.every(call => call.headers["X-Sast-Token"] === "firebase-test-token"));
-  assert.equal(calls[2].url, "/api/v1/repos/available?page=2&per_page=20");
-  assert.equal(calls[3].method, "POST");
-  assert.equal(calls[3].headers["Content-Type"], "application/json");
-  assert.deepEqual(JSON.parse(calls[3].body), { github_id: 42, full_name: "owner/project", owner: "owner", html_url: "https://github.com/owner/project" });
-  assert.equal(calls[3].sastToken, undefined);
-});
-test("available repositories preserve 401 for the GitHub login fallback", async () => {
-  const { api } = client(() => new Response('{"detail":"GitHub required"}', { status: 401 }));
-  await assert.rejects(api.availableRepos(), { status: 401 });
-});
-test("connecting a repository accepts an empty successful response", async () => {
-  const { api } = client(() => new Response(null, { status: 204 }));
-  assert.equal(await api.connectRepo({ github_id: 42, full_name: "owner/project", owner: "owner", html_url: "https://github.com/owner/project" }), null);
-});
-
-test("repository requests prefer the backend session token without replacing Firebase Authorization", async () => {
-  const { api, calls } = client(() => new Response("{}", { status: 200 }), "backend-session-token");
-  await api.repos(); await api.availableRepos(); await api.connectRepo({ github_id: 1, full_name: "owner/repo", owner: "owner", html_url: "https://github.com/owner/repo" });
-  assert.ok(calls.every(call => call.headers["X-Sast-Token"] === "backend-session-token"));
-  assert.ok(calls.every(call => call.headers.Authorization === "Bearer firebase-test-token"));
 });

@@ -42,7 +42,7 @@ export const sastService = {
   },
 
   async getAnalyses() {
-    return readRecent().map((item) => ({
+    const local = readRecent().map((item) => ({
       id: item.id,
       repository_id: item.repository_id,
       repo_name: item.name,
@@ -51,6 +51,16 @@ export const sastService = {
       resultado: item.resultado,
       resolved: item.resolved,
     }));
+    try {
+      const remote = await api.jobs();
+      const seen = new Set((Array.isArray(remote) ? remote : []).map((item) => item.id));
+      return [
+        ...(Array.isArray(remote) ? remote : []),
+        ...local.filter((item) => !seen.has(item.id)),
+      ];
+    } catch {
+      return local;
+    }
   },
 
   async getAnalysisHistory() {

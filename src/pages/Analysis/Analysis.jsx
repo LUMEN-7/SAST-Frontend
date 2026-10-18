@@ -56,7 +56,7 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { api, readRecent } from "../../api";
+import { api, readRecent, saveRecent } from "../../api";
 import { date, severity } from "../../utils/security";
 import Layout from "../../components/layout/AppLayout";
 import Status from "../../components/ui/AnalysisStatus";
@@ -92,6 +92,12 @@ function Analysis() {
           return;
         }
         if (s.status === "completed") {
+          saveRecent({
+            id,
+            name: s.repo_name || recent?.name || "análise",
+            status: s.status,
+            repository_id: s.repository_id || recent?.repository_id || null,
+          });
           try {
             const r = await api.result(id);
             if (active) setResult(r);

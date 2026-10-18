@@ -33,7 +33,7 @@ export async function request(path, options = {}) {
   const { sastToken = false, ...fetchOptions } = options;
   if (auth) await auth.authStateReady();
   const firebaseToken = await auth?.currentUser?.getIdToken();
-  const repositoryToken = sastToken ? readToken() || firebaseToken : "";
+  const repositoryToken = sastToken ? readToken() || firebaseToken : readToken();
   const response = await fetch(BASE + path, {
     ...fetchOptions,
     headers: { ...headers(fetchOptions.headers), ...(firebaseToken ? { Authorization: `Bearer ${firebaseToken}` } : {}), ...(repositoryToken ? { "X-Sast-Token": repositoryToken } : {}) },
@@ -63,6 +63,7 @@ export const api = {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ github_id, full_name, owner, html_url }),
   }).then(optionalJson),
+  findings: () => request("/api/v1/findings").then((r) => r.json()),
   groupSummary: (id) => request("/api/v1/dashboard/summary?" + new URLSearchParams({ group_id: String(id) })).then(r => r.json()),
   groups: () => request("/api/v1/groups").then((r) => r.json()),
   createGroup: (name) =>
@@ -85,10 +86,13 @@ export const api = {
     const body = new FormData();
     body.append("file", file);
     if (repositoryId) body.append("repository_id", repositoryId);
+    const ignored = JSON.parse(localStorage.getItem("ares-rule-preferences") || "[]");
+    if (ignored.length) body.append("disabled_rules", ignored.join(","));
     return request("/api/v1/analysis", { method: "POST", body }).then((r) =>
       r.json(),
     );
   },
+  jobs: () => request("/api/v1/analysis").then((r) => r.json()),
   status: (id) =>
     request(`/api/v1/analysis/${id}/status`).then((r) => r.json()),
   result: (id) =>
