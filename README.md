@@ -397,3 +397,15 @@ A identificação do primeiro login usa os horários de criação e de último a
 
 A entrada em um grupo continua exclusivamente por inclusão pelo administrador usando o e-mail. A interface exibe o e-mail da conta e orienta a solicitar acesso; não há código de convite nem endpoint novo.
 >>>>>>> 9ed7f34 (feat: add onboarding process for new users and group management features)
+
+## Configuração de repositórios (contrato atual)
+
+As rotas usam o prefixo `/api/v1` e `X-Sast-Token`.
+
+- Conectar: `POST /repos/connect` com `{ full_name, protect: true, enforce_admins: true, overwrite_existing: false }`. O painel permite escolher proteção e aplicação aos administradores; `permissions.admin: false` e repositórios arquivados impedem a conexão. Após sucesso, a lista monitorada é atualizada e `protection_error`, se informado, aparece como aviso.
+- Proteção e administradores: `PATCH /repos/{repo_id}` com `{ protection_enabled, enforce_admins }`. O estado só muda após confirmação do backend.
+- Desconectar: `DELETE /repos/{repo_id}`, com confirmação na interface. O frontend não envia `delete_whole_protection`; cabe ao backend decidir pela proteção inteira somente quando `protection_state == created`. Resposta bem-sucedida com `errors` informa que o webhook pode ter ficado órfão no GitHub.
+
+Os códigos `not_admin`, `plan_required`, `existing_protection`, `sso_required`, `unauthorized`, `not_found`, `rate_limited` e `archived` têm mensagens específicas. Em proteção existente, Sobrescrever reenvia com `overwrite_existing: true`; a opção manual conecta apenas o webhook com `protect: false` e orienta adicionar o contexto `sast` sem substituir a proteção existente.
+
+O backend implementa setup/teardown e guarda hook_id, default_branch, protection_state e enforce_admins. O webhook usa `<URL pública>/webhooks/github`, com segredo somente no backend. Em desenvolvimento, utilize ngrok ou cloudflared; nunca exponha webhook_secret em variáveis VITE.

@@ -23,12 +23,14 @@ import Status from "../../components/ui/AnalysisStatus";
 import SecurityResult from "../../components/ui/SecurityResult";
 import AnalysisLegend from "../../components/analysis/AnalysisLegend";
 import Tag from "../../components/ui/SeverityTag";
+import RepositorySettings from "../../components/repositories/RepositorySettings";
 import { sastService } from "../../services/sastService";
 import { date } from "../../utils/security";
 import "./RepositoryDetails.css";
 
 export default function RepositoryDetails() {
   const { id } = useParams();
+  const [disconnected, setDisconnected] = useState(false);
   const [data, setData] = useState({ repo: null, analyses: [], alerts: [] }),
     [loading, setLoading] = useState(true),
     [error, setError] = useState("");
@@ -103,6 +105,8 @@ export default function RepositoryDetails() {
                 <p>{repo.language} · Histórico de segurança</p>
               </div>
             </div>
+            <RepositorySettings key={repo.id} repo={repo} onDisconnected={() => setDisconnected(true)} />
+            {!disconnected && <>
             <div className="repo-detail-stats">
               <div className="panel">
                 <span>
@@ -269,6 +273,7 @@ export default function RepositoryDetails() {
                 </div>
               )}
             </section>
+            </>}
           </>
         )}
       </main>

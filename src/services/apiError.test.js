@@ -27,3 +27,10 @@ test("malformed JSON stays readable and structured validation errors are preserv
   const validation = await readApiError(new Response('{"detail":[{"msg":"required"}]}', { status: 422 }));
   assert.match(validation.message, /required/);
 });
+
+test("structured backend configuration errors retain their code",async()=>{
+ for(const body of [{code:"not_admin"},{detail:{code:"existing_protection"}}]){
+  const error=await readApiError(new Response(JSON.stringify(body),{status:403}));
+  assert.equal(error.code,body.code||body.detail.code);assert.deepEqual(error.details,body);
+ }
+});

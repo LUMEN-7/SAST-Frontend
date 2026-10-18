@@ -2,8 +2,10 @@ export async function readApiError(response) {
   // Consume the stream once; JSON parsing must operate on the buffered text.
   const text = await response.text();
   let message = text.trim();
+  let payload;
   try {
     const body = JSON.parse(text);
+    payload = body;
     const detail = body?.detail ?? body?.message ?? body?.error ?? body;
     message = typeof detail === "string" ? detail : JSON.stringify(detail);
   } catch {
@@ -11,5 +13,7 @@ export async function readApiError(response) {
   }
   const error = new Error(message || `Não foi possível comunicar com a API (HTTP ${response.status}).`);
   error.status = response.status;
+  error.code = payload?.code ?? payload?.detail?.code;
+  error.details = payload;
   return error;
 }

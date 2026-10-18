@@ -11,6 +11,7 @@ import Layout from "../../components/layout/AppLayout";
 import AddRepository from "../../components/repositories/AddRepository";
 import { api } from "../../api";
 import { severity } from "../../utils/security";
+import { repositoryError, protectionWarning } from "../../services/repositoryConfig";
 import "./Repositories.css";
 
 export default function Repositories() {
@@ -19,6 +20,7 @@ export default function Repositories() {
     [error, setError] = useState(""),
     [adding, setAdding] = useState(false),
     [refresh, setRefresh] = useState(0),
+    [notice, setNotice] = useState(""),
     [query, setQuery] = useState("");
   useEffect(() => {
     let active = true;
@@ -29,7 +31,7 @@ export default function Repositories() {
           setRepos(Array.isArray(data) ? data : data.repos || []);
         }
       })
-      .catch(err => { if (active) setError(err.message); })
+      .catch(err => { if (active) setError(repositoryError(err)); })
       .finally(() => { if (active) setLoading(false); });
     return () => {
       active = false;
@@ -51,7 +53,8 @@ export default function Repositories() {
           </div>
           <button type="button" className="btn btn-primary" onClick={() => setAdding(true)}><Plus size={17} /> Adicionar</button>
         </div>
-        {adding && <AddRepository onClose={() => setAdding(false)} onConnected={() => { setAdding(false); setRefresh(value => value + 1); }} />}
+        {adding && <AddRepository onClose={() => setAdding(false)} onConnected={result => { setAdding(false); setNotice(["Repositório conectado.", protectionWarning(result), result?.manualCheck].filter(Boolean).join(" ")); setRefresh(value => value + 1); }} />}
+        {notice && <div className="repo-config-warning" role="status">{notice}</div>}
         <section className="panel connected-repositories">
           <div className="panel-head">
             <div>

@@ -57,12 +57,17 @@ export const api = {
   },
   repos: () => request("/api/v1/repos", { sastToken: true }).then((r) => r.json()),
   availableRepos: (page = 1) => request(`/api/v1/repos/available?${new URLSearchParams({ page: String(page), per_page: "20" })}`, { sastToken: true }).then(r => r.json()),
-  connectRepo: ({ github_id, full_name, owner, html_url }) => request("/api/v1/repos", {
+  connectRepo: ({ full_name }, { protect = true, enforce_admins = true, overwrite_existing = false } = {}) => request("/api/v1/repos/connect", {
     sastToken: true,
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ github_id, full_name, owner, html_url }),
+    body: JSON.stringify({ full_name, protect, enforce_admins, overwrite_existing }),
   }).then(optionalJson),
+  updateRepo: (id, { protection_enabled, enforce_admins }) => request(`/api/v1/repos/${encodeURIComponent(id)}`, {
+    sastToken: true, method: "PATCH", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ protection_enabled, enforce_admins }),
+  }).then(optionalJson),
+  disconnectRepo: id => request(`/api/v1/repos/${encodeURIComponent(id)}`, { sastToken: true, method: "DELETE" }).then(optionalJson),
   findings: () => request("/api/v1/findings").then((r) => r.json()),
   groupSummary: (id) => request("/api/v1/dashboard/summary?" + new URLSearchParams({ group_id: String(id) })).then(r => r.json()),
   groups: () => request("/api/v1/groups").then((r) => r.json()),

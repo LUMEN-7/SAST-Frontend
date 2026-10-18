@@ -16,6 +16,7 @@ function mapRepo(repo, findings = []) {
     return acc;
   }, {});
   return {
+    ...repo,
     id: repo.id,
     name: (repo.full_name || "").split("/").pop(),
     full_name: repo.full_name,
@@ -38,7 +39,7 @@ export const sastService = {
       throw error;
     });
     const repos = data.repos || [];
-    return repos.map((repo) => mapRepo(repo, Array.from({ length: repo.findings || 0 })));
+    return repos.map(repo => ({ ...mapRepo(repo), risk: repo.risk || null, findings: repo.findings ?? 0 }));
   },
 
   async getAnalyses() {
@@ -87,19 +88,19 @@ export const sastService = {
   },
 
   async getRepositoryOverview(id) {
-    const [repos, jobs, alerts] = await Promise.all([
-      this.getRepositories(),
+    const [data, jobs] = await Promise.all([
+      api.repos(),
       this.getAnalyses(),
-      this.getAlerts(),
     ]);
-    const repo = repos.find((item) => String(item.id) === String(id)) || null;
-    const summary = await api.summary(id, 30);
+    const repos = Array.isArray(data) ? data : data.repos || [];
+    const raw = repos.find(item => String(item.id) === String(id));
+    const repo = raw ? { ...raw, branch: raw.default_branch || raw.branch, language: raw.language || "" } : null;
     const analyses = jobs.filter((item) => String(item.repository_id) === String(id));
     return {
       repo,
       analyses,
-      alerts: alerts.filter((item) => item.repository_id === id),
-      summary,
+      alerts: [],
+      summary: null,
     };
   },
 

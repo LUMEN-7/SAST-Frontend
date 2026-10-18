@@ -12,8 +12,8 @@ function client(respond) {
   const auth = { currentUser:{uid:"account-uid",getIdToken:async()=>"firebase-test-token"},authStateReady:async()=>{} };
   const storage = { getItem:()=>null };
   const fetchMock = async (url,options) => { calls.push({url,...options}); return respond(url,options); };
-  new Function("require","module","exports","fetch","localStorage",code)(
-    name => name==="./firebase" ? {auth} : {readApiError},module,module.exports,fetchMock,storage
+  new Function("require","module","exports","fetch","localStorage","window",code)(
+    name => name==="./firebase" ? {auth} : {readApiError},module,module.exports,fetchMock,storage,{ location: { search: "" } }
   );
   return {api:module.exports.api,calls};
 }
@@ -42,4 +42,16 @@ test("group associations accept empty success responses",async()=>{
 test("group summary preserves backend 403 instead of returning empty metrics",async()=>{
   const {api}=client(()=>new Response('{"detail":"Admins only"}',{status:403}));
   await assert.rejects(api.groupSummary("g"),{status:403,message:"Admins only"});
+});
+
+test("repository toggles and disconnect preserve the configuration contract", async () => {
+ const {api,calls}=client(()=>new Response(null,{status:204}));
+ await api.connectRepo({full_name:"org/repo"},{protect:false,enforce_admins:false,overwrite_existing:true});
+ await api.updateRepo("r/id",{protection_enabled:true,enforce_admins:false});
+ await api.disconnectRepo("r/id");
+ assert.deepEqual(JSON.parse(calls[0].body),{full_name:"org/repo",protect:false,enforce_admins:false,overwrite_existing:true});
+ assert.equal(calls[1].method,"PATCH"); assert.equal(calls[1].url,"/api/v1/repos/r%2Fid");
+ assert.deepEqual(JSON.parse(calls[1].body),{protection_enabled:true,enforce_admins:false});
+ assert.equal(calls[2].method,"DELETE"); assert.equal(calls[2].body,undefined);
+ assert.ok(calls.every(call=>call.headers["X-Sast-Token"]==="firebase-test-token"));
 });

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { transformSync } from "esbuild";
 import * as jsx from "react/jsx-runtime";
+import * as config from "../../services/repositoryConfig.js";
 
 // Run component event handlers and effects against deterministic API responses.
 function mount(path, api, props = {}) {
@@ -19,6 +20,7 @@ function mount(path, api, props = {}) {
     if (name === "react") return hooks;
     if (name === "react/jsx-runtime") return jsx;
     if (name.endsWith("/api")) return { api };
+    if (name.endsWith("/repositoryConfig")) return config;
     if (name.endsWith("/security")) return { severity: () => ({ label: "Alta" }) };
     if (name === "react-router-dom") return { Link: "a" };
     if (name === "lucide-react") return new Proxy({}, { get: (_, key) => key });
@@ -70,4 +72,29 @@ test("401 shows GitHub login instead of repository rows and pagination", async (
   const login = nodes(tree).find(node => node.type === "a");
   assert.equal(login.props.href, "/api/v1/auth/github"); assert.match(text(login), /Entrar com GitHub/);
   assert.equal(button(tree, " Conectar"), undefined); assert.equal(button(tree, "Próxima "), undefined); screen.unmount();
+});
+
+test("non-admin repositories are blocked and existing protection requires explicit overwrite", async () => {
+ const calls=[]; let result;
+ const screen=mount("./AddRepository.jsx",{
+  availableRepos:async()=>({repos:[{full_name:"org/locked",permissions:{admin:false}},{full_name:"org/allowed",permissions:{admin:true}}]}),
+  connectRepo:async(repo,options)=>{calls.push({repo,options});if(!options.overwrite_existing)throw {code:"existing_protection"};return {repo_id:"r"};}
+ },{onClose(){},onConnected:value=>{result=value;}});
+ screen.render();let tree=await screen.settle();
+ const buttons=nodes(tree).filter(node=>node.type==="button"&&text(node)===" Conectar");
+ assert.equal(buttons[0].props.disabled,true);await buttons[0].props.onClick();assert.equal(calls.length,0);
+ await buttons[1].props.onClick();tree=screen.render();assert.equal(calls[0].options.overwrite_existing,false);
+ assert.ok(button(tree,"Adicionar o check sast manualmente"));
+ await button(tree,"Sobrescrever").props.onClick();assert.equal(calls[1].options.overwrite_existing,true);assert.equal(result.repo_id,"r");screen.unmount();
+});
+test("configuration toggles do not change on failure and disconnect reports orphan hooks",async()=>{
+ let deletes=0, notified=false;
+ const screen=mount("./RepositorySettings.jsx",{
+  updateRepo:async()=>{throw {code:"rate_limited"};},
+  disconnectRepo:async()=>{deletes++;return {errors:["token revoked"]};}
+ },{repo:{id:"r",full_name:"org/repo",protection_state:"created",enforce_admins:true},onDisconnected:()=>{notified=true;}});
+ let tree=screen.render();await nodes(tree).find(node=>node.type==="input").props.onChange({target:{checked:false}});tree=screen.render();
+ assert.equal(nodes(tree).find(node=>node.type==="input").props.checked,true);assert.match(text(tree),/Tente novamente em instantes/);
+ button(tree,"Desconectar").props.onClick();tree=screen.render();assert.equal(deletes,0);
+ await button(tree,"Confirmar desconexão").props.onClick();tree=screen.render();assert.equal(deletes,1);assert.ok(notified);assert.match(text(tree),/webhook pode ter ficado órfão/);screen.unmount();
 });
