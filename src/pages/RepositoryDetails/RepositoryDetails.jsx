@@ -246,7 +246,7 @@ export default function RepositoryDetails() {
                       {ordered.map((a) => (
                         <tr key={a.id}>
                           <td>{date(a.created_at)}</td>
-                          <td className="mono">{a.commit || "—"}</td>
+                          <td className="mono">{a.commit || "Não informado"}</td>
                           <td>{a.total_findings ?? "—"}</td>
                           <td>
                             <Status value={a.status} />

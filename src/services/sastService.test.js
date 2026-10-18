@@ -2,10 +2,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { transformSync } from "esbuild";
+import * as analysisData from "./analysisData.js";
 function service(api, recent = []) {
   const { code } = transformSync(fs.readFileSync(new URL("./sastService.js", import.meta.url), "utf8"), { format: "cjs", define: { "import.meta.env.VITE_DATA_MODE": '"api"' } });
   const module = { exports: {} };
-  new Function("require", "module", "exports", code)(() => ({ api, readRecent: () => recent }), module, module.exports);
+  new Function("require", "module", "exports", code)(name => name.endsWith("analysisData") ? analysisData : ({ api, readRecent: () => recent }), module, module.exports);
   return module.exports.sastService;
 }
 test("empty API data stays empty across repository, alerts and history views", async () => {
@@ -56,4 +57,14 @@ test("repository settings retain configuration without requiring analysis result
  const result=await s.getRepositoryOverview("r");
  assert.equal(result.repo.hook_id,123);assert.equal(result.repo.enforce_admins,true);assert.equal(result.repo.protection_state,"created");
  assert.deepEqual(result.analyses,[]);
+});
+
+test("analysis listing enriches completed backend jobs rather than losing their fields", async () => {
+  const s=service({
+    jobs:async()=>({jobs:[{job_id:"scan-id",repository_id:"r",status:"completed",commit_sha:"abc123"}]}),
+    result:async()=>({total_findings:5,severity_summary:{critical:0,high:2,medium:3,low:0}}),
+    gate:async()=>({gate:"fail"}),
+  });
+  const [row]=await s.getAnalyses();
+  assert.equal(row.id,"scan-id"); assert.equal(row.commit,"abc123"); assert.equal(row.total_findings,5); assert.equal(row.high,2); assert.equal(row.gate.gate,"fail");
 });

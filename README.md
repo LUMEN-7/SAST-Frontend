@@ -409,3 +409,9 @@ As rotas usam o prefixo `/api/v1` e `X-Sast-Token`.
 Os códigos `not_admin`, `plan_required`, `existing_protection`, `sso_required`, `unauthorized`, `not_found`, `rate_limited` e `archived` têm mensagens específicas. Em proteção existente, Sobrescrever reenvia com `overwrite_existing: true`; a opção manual conecta apenas o webhook com `protect: false` e orienta adicionar o contexto `sast` sem substituir a proteção existente.
 
 O backend implementa setup/teardown e guarda hook_id, default_branch, protection_state e enforce_admins. O webhook usa `<URL pública>/webhooks/github`, com segredo somente no backend. Em desenvolvimento, utilize ngrok ou cloudflared; nunca exponha webhook_secret em variáveis VITE.
+
+## Campos do histórico de análises
+
+A listagem de execuções é normalizada antes de alimentar os históricos. O front reconhece `id`/`job_id`, `commit`/`commit_sha`/`sha`, `total_findings`, `severity_summary`, `severity_distribution` e resultados explícitos de gate/resultado. Campos reais do histórico local são preservados ao mesclar a resposta remota.
+
+Para execuções concluídas com metadados incompletos, o serviço consulta `/analysis/{id}/result` e `/analysis/{id}/gate?threshold=high`, com no máximo quatro execuções simultâneas. Uma falha de detalhe não descarta a linha nem os demais campos disponíveis. O resultado do gate prevalece sobre contagens; status concluído ou total de achados, isoladamente, não significam aprovação. Sem resultado retornado pela API, uma execução concluída mostra “Não informado”, em vez de “Pendente”. Commit ausente continua sinalizado como não informado, sem valor inventado.

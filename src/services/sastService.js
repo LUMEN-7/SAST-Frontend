@@ -1,4 +1,5 @@
 import { api, readRecent } from "../api";
+import { normalizeAnalysis, enrichAnalyses } from "./analysisData";
 
 export const isDemo = import.meta.env.VITE_DATA_MODE !== "api";
 
@@ -43,25 +44,28 @@ export const sastService = {
   },
 
   async getAnalyses() {
-    const local = readRecent().map((item) => ({
+    const local = readRecent().map((item) => normalizeAnalysis({
+      ...item,
       id: item.id,
       repository_id: item.repository_id,
-      repo_name: item.name,
+      repo_name: item.repo_name || item.name,
       status: item.status,
-      created_at: item.at,
+      created_at: item.created_at || item.at,
       resultado: item.resultado,
       resolved: item.resolved,
     }));
+    let rows = local;
     try {
-      const remote = await api.jobs();
-      const seen = new Set((Array.isArray(remote) ? remote : []).map((item) => item.id));
-      return [
-        ...(Array.isArray(remote) ? remote : []),
+      const response = await api.jobs();
+      const localById = new Map(local.map(item => [item.id, item]));
+      const remote = (Array.isArray(response) ? response : response?.jobs || response?.analyses || response?.items || []).map(item => normalizeAnalysis({ ...localById.get(item.id || item.job_id), ...item }));
+      const seen = new Set(remote.map(item => item.id));
+      rows = [
+        ...remote,
         ...local.filter((item) => !seen.has(item.id)),
       ];
-    } catch {
-      return local;
-    }
+    } catch { /* Keep the real local history if the listing is unavailable. */ }
+    return enrichAnalyses(rows, api);
   },
 
   async getAnalysisHistory() {

@@ -55,7 +55,7 @@ export default function RepositoryAnalysisAccordion({ groups }) {
                       </small>
                     </td>
                     <td>{date(analysis.created_at || analysis.at)}</td>
-                    <td className="mono">{analysis.commit || "—"}</td>
+                    <td className="mono">{analysis.commit || "Não informado"}</td>
                     <td>{analysis.total_findings ?? "—"}</td>
                     <td>
                       <Status value={analysis.status} />
