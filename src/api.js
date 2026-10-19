@@ -57,7 +57,7 @@ export const api = {
   },
   repos: () => request("/api/v1/repos", { sastToken: true }).then((r) => r.json()),
   availableRepos: (page = 1) => request(`/api/v1/repos/available?${new URLSearchParams({ page: String(page), per_page: "20" })}`, { sastToken: true }).then(r => r.json()),
-  connectRepo: ({ full_name }, { protect = true, enforce_admins = true, overwrite_existing = false } = {}) => request("/api/v1/repos/connect", {
+  connectRepo: ({ full_name }, { protect = true, enforce_admins = true, overwrite_existing = false } = {}) => request("/api/v1/repos", {
     sastToken: true,
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -79,12 +79,17 @@ export const api = {
     }).then((r) => r.json()),
   addGroupRepo: (groupId, repositoryId) =>
     request(`/api/v1/groups/${encodeURIComponent(groupId)}/repos/${encodeURIComponent(repositoryId)}`, { method: "POST" }).then(optionalJson),
-  addGroupMember: (groupId, email, role) =>
-    request(`/api/v1/groups/${encodeURIComponent(groupId)}/members`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, role }),
-    }).then(optionalJson),
+  addGroupMember: (groupId, login, role) =>
+  request(`/api/v1/groups/${encodeURIComponent(groupId)}/members`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ login, role }),
+  }).then(optionalJson),
+  
+  groupMembers: (id) => request(`/api/v1/groups/${encodeURIComponent(id)}/members`).then((r) => r.json()),
+  groupRepos: (id) => request(`/api/v1/groups/${encodeURIComponent(id)}/repos`).then((r) => r.json()),
+
+
   repoFindings: (id) =>
     request(`/api/v1/repos/${id}/findings`).then((r) => r.json()),
   submit: (file, repositoryId) => {

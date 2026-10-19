@@ -22,12 +22,16 @@ export default function Groups() {
   const [listError,setListError] = useState("");
   const [reload,setReload] = useState(0);
   const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
+  const [login,setLogin] = useState("");
   const [role,setRole] = useState("member");
   const [repositoryId,setRepositoryId] = useState("");
   const [repos,setRepos] = useState([]);
   const [reposLoading,setReposLoading] = useState(false);
   const [reposError,setReposError] = useState("");
+  const [members,setMembers] = useState([]);
+  const [linked,setLinked] = useState([]);
+  const [listsLoading,setListsLoading] = useState(false);
+  const [listsError,setListsError] = useState("");
   const [summary,setSummary] = useState(null);
   const [summaryError,setSummaryError] = useState("");
   const [summaryLoading,setSummaryLoading] = useState(false);
@@ -37,6 +41,7 @@ export default function Groups() {
   const [actionError,setActionError] = useState("");
   const current = groups.find(g => String(g.id) === selected);
   const admin = current?.role === "admin";
+  const linkedIds = new Set(linked.map(r => String(r.id)));
   useEffect(() => {
     let active = true;
     setLoading(true); setListError("");
@@ -49,7 +54,7 @@ export default function Groups() {
     return () => { active = false; };
   },[reload]);
   useEffect(() => {
-    setEmail(""); setRole("member"); setRepositoryId("");
+    setLogin(""); setRole("member"); setRepositoryId("");
   },[selected]);
   useEffect(() => {
     let active = true;
@@ -64,6 +69,21 @@ export default function Groups() {
       if (active) setRepos(data.repos);
     }).catch(error => { if (active) setReposError(errorText(error)); })
       .finally(() => { if (active) setReposLoading(false); });
+    return () => { active = false; };
+  },[selected,admin,summaryReload]);
+  useEffect(() => {
+    let active = true;
+    setMembers([]); setLinked([]); setListsError("");
+    if (!admin || !selected) { setListsLoading(false); return; }
+    setListsLoading(true);
+    Promise.all([api.groupMembers(selected), api.groupRepos(selected)])
+      .then(([people, linkedRepos]) => {
+        if (!active) return;
+        setMembers(Array.isArray(people) ? people : []);
+        setLinked(Array.isArray(linkedRepos) ? linkedRepos : []);
+      })
+      .catch(error => { if (active) setListsError(errorText(error)); })
+      .finally(() => { if (active) setListsLoading(false); });
     return () => { active = false; };
   },[selected,admin,summaryReload]);
   async function create(event) {
@@ -92,11 +112,12 @@ export default function Groups() {
   }
   async function addMember(event) {
     event.preventDefault();
-    if (!admin || busy || !email.trim()) return;
+    if (!admin || busy || !login.trim()) return;
     setBusy("member"); setActionError(""); setNotice("");
     try {
-      await api.addGroupMember(selected,email.trim(),role);
-      setEmail(""); setRole("member"); setNotice("Pessoa adicionada ao grupo.");
+      await api.addGroupMember(selected,login.trim(),role);
+      setLogin(""); setRole("member"); setNotice("Pessoa adicionada ao grupo.");
+      setSummaryReload(x => x+1);
     } catch (error) { setActionError(errorText(error)); }
     finally { setBusy(""); }
   }
@@ -111,9 +132,11 @@ export default function Groups() {
     {current && <div className="group-workspace"><div className="group-heading"><div><h2>{current.name}</h2><p>{admin?"Acesso de administrador":"Acesso de membro"}</p></div></div>
     {!admin ? <section className="panel"><h2>Acesso de membro</h2><p>O resumo do grupo e o gerenciamento de acessos e repositórios estão disponíveis aos administradores.</p></section> : <>
     <section className="panel"><div className="panel-head"><div><h2>Painel do gerente</h2><p>Resultados dos repositórios deste grupo.</p></div><button className="btn btn-outline" disabled={summaryLoading || disabled} onClick={()=>setSummaryReload(x=>x+1)}><RefreshCw size={16}/>Atualizar</button></div>
-    {summaryLoading ? <p role="status">Carregando resumo…</p> : summaryError ? <p role="alert">{summaryError}</p> : summary ? <><dl className="group-metrics"><div><dt>Análises realizadas</dt><dd>{summary.total_jobs ?? "—"}</dd></div><div><dt>Vulnerabilidades</dt><dd>{summary.total_findings ?? "—"}</dd></div></dl><div className="group-distribution">{["critical","high","medium","low"].map(level=><span key={level}><i style={{background:severity(level).color}}/>{severity(level).label}<b>{summary.severity_distribution?.[level] ?? "—"}</b></span>)}</div></> : <p>Nenhum resumo disponível.</p>}</section>
-    <form className="panel group-form" onSubmit={addRepo}><h2><FolderGit2 size={18}/>Associar repositório</h2><p>Escolha um repositório da sua conta para incluir no grupo.</p>{reposError ? <p role="alert">{reposError}</p> : <><label htmlFor="group-repo">Repositório<select id="group-repo" value={repositoryId} onChange={e=>setRepositoryId(e.target.value)} required disabled={disabled || reposLoading}><option value="">{reposLoading?"Carregando…":"Escolha um repositório"}</option>{repos.map(repo=><option key={repo.id} value={repo.id}>{repo.full_name || repo.name || repo.id}</option>)}</select></label>{!reposLoading && !repos.length && <p>Nenhum repositório disponível na sua conta.</p>}<button className="btn btn-outline" disabled={disabled || !repositoryId}>{busy==="repo"?"Associando…":"Associar ao grupo"}</button></>}</form>
-    <form className="panel group-form" onSubmit={addMember}><h2><Users size={18}/>Adicionar pessoa</h2><p>A pessoa precisa ter acessado o Ares ao menos uma vez.</p><div className="group-member-fields"><label htmlFor="group-email">E-mail<input id="group-email" type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} required disabled={disabled} placeholder="nome@empresa.com"/></label><label htmlFor="group-role">Papel<select id="group-role" value={role} onChange={e=>setRole(e.target.value)} disabled={disabled}><option value="member">Membro</option><option value="admin">Administrador</option></select></label></div><p className="group-role-help">{role==="admin"?"Administradores acessam o painel do gerente e gerenciam membros e repositórios.":"Membros não acessam o painel do gerente."}</p><button className="btn btn-primary" disabled={disabled || !email.trim()}>{busy==="member"?"Adicionando…":"Adicionar ao grupo"}</button></form>
+    {summaryLoading ? <p role="status">Carregando resumo…</p> : summaryError ? <p role="alert">{summaryError}</p> : summary ? <><dl className="group-metrics"><div><dt>Análises realizadas</dt><dd>{summary.total_jobs ?? "—"}</dd></div><div><dt>Vulnerabilidades</dt><dd>{summary.total_findings ?? "—"}</dd></div><div><dt>Repositórios</dt><dd>{summary.repos?.length ?? "—"}</dd></div><div><dt>Pessoas ativas</dt><dd>{summary.members ? summary.members.filter(m=>m.jobs>0).length : "—"}</dd></div></dl><div className="group-distribution">{["critical","high","medium","low"].map(level=><span key={level}><i style={{background:severity(level).color}}/>{severity(level).label}<b>{summary.severity_distribution?.[level] ?? "—"}</b></span>)}</div>{summary.repos?.length ? <ul className="group-list">{summary.repos.map(r=><li key={r.repository_id}><FolderGit2 size={16}/><span>{r.full_name}</span><small>{r.jobs} análise(s) · {r.findings} vulnerab.</small></li>)}</ul> : null}</> : <p>Nenhum resumo disponível.</p>}</section>
+    <form className="panel group-form" onSubmit={addRepo}><h2><FolderGit2 size={18}/>Associar repositório</h2><p>Escolha um repositório da sua conta para incluir no grupo.</p>{reposError ? <p role="alert">{reposError}</p> : <><label htmlFor="group-repo">Repositório<select id="group-repo" value={repositoryId} onChange={e=>setRepositoryId(e.target.value)} required disabled={disabled || reposLoading}><option value="">{reposLoading?"Carregando…":"Escolha um repositório"}</option>{repos.filter(repo=>!linkedIds.has(String(repo.id))).map(repo=><option key={repo.id} value={repo.id}>{repo.full_name || repo.name || repo.id}</option>)}</select></label>{!reposLoading && !repos.length && <p>Nenhum repositório disponível na sua conta.</p>}<button className="btn btn-outline" disabled={disabled || !repositoryId}>{busy==="repo"?"Associando…":"Associar ao grupo"}</button></>}</form>
+    <section className="panel group-list-panel"><h2><FolderGit2 size={18}/>Repositórios do grupo <small>{linked.length}</small></h2>{listsLoading ? <p role="status">Carregando…</p> : listsError ? <p role="alert">{listsError}</p> : !linked.length ? <p>Nenhum repositório associado ainda.</p> : <ul className="group-list">{linked.map(r=><li key={r.id}><FolderGit2 size={16}/><span>{r.full_name}</span></li>)}</ul>}</section>
+    <form className="panel group-form" onSubmit={addMember}><h2><Users size={18}/>Adicionar pessoa</h2><p>A pessoa precisa ter entrado no Ares com o GitHub ao menos uma vez.</p><div className="group-member-fields"><label htmlFor="group-login">Usuário do GitHub<input id="group-login" type="text" autoComplete="off" autoCapitalize="none" spellCheck={false} value={login} onChange={e=>setLogin(e.target.value)} required disabled={disabled} pattern="@?[A-Za-z0-9\-]{1,39}" title="Login do GitHub, por exemplo octocat" placeholder="octocat"/></label><label htmlFor="group-role">Papel<select id="group-role" value={role} onChange={e=>setRole(e.target.value)} disabled={disabled}><option value="member">Membro</option><option value="admin">Administrador</option></select></label></div><p className="group-role-help">{role==="admin"?"Administradores acessam o painel do gerente e gerenciam membros e repositórios.":"Membros não acessam o painel do gerente."}</p><button className="btn btn-primary" disabled={disabled || !login.trim()}>{busy==="member"?"Adicionando…":"Adicionar ao grupo"}</button></form>
+    <section className="panel group-list-panel"><h2><Users size={18}/>Pessoas no grupo <small>{members.length}</small></h2>{listsLoading ? <p role="status">Carregando…</p> : listsError ? <p role="alert">{listsError}</p> : !members.length ? <p>Nenhuma pessoa no grupo ainda.</p> : <ul className="group-list">{members.map(m=><li key={m.id}>{m.avatar_url ? <img src={m.avatar_url} alt="" width="24" height="24"/> : <Users size={16}/>}<span>{m.login || m.name || "Sem nome"}</span><small>{m.role==="admin"?"Administrador":"Membro"}</small></li>)}</ul>}</section>
     </>}</div>}</div>}
   </main></Layout>;
 }
